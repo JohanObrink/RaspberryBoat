@@ -1,9 +1,18 @@
 {
-	"name": "RaspberryBoat",
-	"version": "0.0.1",
-	"author": "Johan Öbrink <johan.obrink@gmail.com>",
-	"dependencies": {
-		"serialport": "*",
-		"nmea": "*"
-	}
+  "name": "RaspberryBoat",
+  "version": "0.0.1",
+  "author": "Johan Öbrink <johan.obrink@gmail.com>",
+  "dependencies": {
+    "serialport": "*",
+    "nmea": "*"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": "*"
+  },
+  "description": "An RC boat with GPS and Web Cam running on Raspberry Pi and node.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/JohanObrink/RaspberryBoat.git"
+  }
 }
