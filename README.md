@@ -10,3 +10,4 @@
 7. 4G Dongle
 8. Servo controller - KJ
 9. Raspberry Pi
+10. Flood lights
