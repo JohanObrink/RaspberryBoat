@@ -1,0 +1,9 @@
+{
+	"name": "RaspberryBoat",
+	"version": "0.0.1",
+	"author": "Johan Öbrink <johan.obrink@gmail.com>",
+	"dependencies": {
+		"serialport": "*",
+		"nmea": "*"
+	}
+}
