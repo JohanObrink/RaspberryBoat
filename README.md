@@ -9,3 +9,4 @@
 6. GPS - JÖ, X
 7. 4G Dongle
 8. Servo controller - KJ
+9. Raspberry Pi
