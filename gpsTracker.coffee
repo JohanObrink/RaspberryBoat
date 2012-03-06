@@ -21,7 +21,7 @@ class Tracker
 
   onData: (line) =>
     data = nmea.parse line
-    unless !data
+    if data?
       switch data.type
         when 'satellite-list-partial' then @parseSatelliteListMessage data
         when 'fix'
@@ -30,10 +30,10 @@ class Tracker
         #else console.log data
 
   parseSatelliteListMessage: (data) =>
-    if !@satelliteListPartial
-      @satelliteListPartial = data
-    else
+    if @satelliteListPartial?
       @satelliteListPartial.satellites = @satelliteListPartial.satellites.concat data.satellites
+    else
+      @satelliteListPartial = data
 
     if @satelliteListPartial.numMsgs is data.msgNum
       @satelliteListPartial.msgNum = data.msgNum

@@ -39,7 +39,7 @@
     Tracker.prototype.onData = function(line) {
       var data;
       data = nmea.parse(line);
-      if (!!data) {
+      if (data != null) {
         switch (data.type) {
           case 'satellite-list-partial':
             return this.parseSatelliteListMessage(data);
@@ -50,10 +50,10 @@
     };
 
     Tracker.prototype.parseSatelliteListMessage = function(data) {
-      if (!this.satelliteListPartial) {
-        this.satelliteListPartial = data;
-      } else {
+      if (this.satelliteListPartial != null) {
         this.satelliteListPartial.satellites = this.satelliteListPartial.satellites.concat(data.satellites);
+      } else {
+        this.satelliteListPartial = data;
       }
       if (this.satelliteListPartial.numMsgs === data.msgNum) {
         this.satelliteListPartial.msgNum = data.msgNum;
