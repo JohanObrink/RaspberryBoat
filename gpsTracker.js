@@ -75,9 +75,10 @@
 
     Tracker.prototype.nmeaToDecimal = function(val) {
       var deg, min;
-      deg = val.substring(0, val.indexOf('.' - 2));
+      deg = val.substring(0, val.indexOf('.') - 2);
       min = val.substring(deg.length);
-      return parseInt(deg, 10) + (parseFloat(min, 10) / 60);
+      console.log(val + ': ' + deg + ' , ' + min);
+      return parseInt(deg, 10) + (parseFloat(min) / 60);
     };
 
     return Tracker;

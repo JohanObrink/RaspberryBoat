@@ -46,10 +46,12 @@ class Tracker
       @satelliteListPartial = null
 
   nmeaToDecimal: (val) =>
-    deg = val.substring(0, val.indexOf '.' - 2)
-    min = val.substring(deg.length)
+    #10141.82531
+    deg = val.substring 0, val.indexOf('.') - 2
+    min = val.substring deg.length
+    console.log(val + ': ' + deg + ' , ' + min);
 
-    parseInt(deg, 10) + (parseFloat(min, 10) / 60) 
+    parseInt(deg, 10) + (parseFloat(min) / 60) 
 
 
 
