@@ -7,7 +7,9 @@
     "nmea": "*",
     "express": "*",
     "jade": "*",
-    "now": "*"
+    "now": "*",
+    "assert": "*",
+    "vows": "*"
   },
   "devDependencies": {},
   "engines": {

@@ -1,5 +1,4 @@
-var Tracker = new require('./gpsTracker.js');
-var tracker = new Tracker();
+var tracker = require('./gpsTracker.js').createTracker();
 
 tracker.connect('/dev/cu.usbserial', 4800, function(err){
 	if(err)

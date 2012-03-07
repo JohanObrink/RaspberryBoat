@@ -84,6 +84,8 @@
 
   })();
 
-  module.exports = Tracker;
+  exports.createTracker = function() {
+    return new Tracker();
+  };
 
 }).call(this);

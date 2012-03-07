@@ -53,4 +53,5 @@ class Tracker
 
 
 
-module.exports = Tracker 
+exports.createTracker = () ->
+  new Tracker() 
