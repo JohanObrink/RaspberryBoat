@@ -4,7 +4,9 @@
   "author": "Johan Öbrink <johan.obrink@gmail.com>",
   "dependencies": {
     "serialport": "*",
-    "nmea": "*"
+    "nmea": "*",
+    "assert": "*",
+    "vows": "*"
   },
   "devDependencies": {},
   "engines": {
