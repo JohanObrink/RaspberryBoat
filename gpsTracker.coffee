@@ -25,9 +25,14 @@ class Tracker
       switch data.type
         when 'satellite-list-partial' then @parseSatelliteListMessage data
         when 'fix'
-          unless !@fixCallback
-            @fixCallback null, data
-        #else console.log data
+          if @fixCallback?
+            if !!data.lon and !!data.lat
+              data.lat = @nmeaToDecimal data.lat
+              data.lon = @nmeaToDecimal data.lon
+              @fixCallback null, data
+            else
+              console.log data
+          else console.log 'Noone is listening to me!!!'
 
   parseSatelliteListMessage: (data) =>
     if @satelliteListPartial?
@@ -39,6 +44,13 @@ class Tracker
       @satelliteListPartial.msgNum = data.msgNum
       @satelliteListCallback null, @satelliteListPartial
       @satelliteListPartial = null
+
+  nmeaToDecimal: (val) =>
+    deg = val.substring(0, val.indexOf '.' - 2)
+    min = val.substring(deg.length)
+
+    parseInt(deg, 10) + (parseFloat(min, 10) / 60) 
+
 
 
 module.exports = Tracker 

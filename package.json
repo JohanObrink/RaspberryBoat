@@ -4,7 +4,10 @@
   "author": "Johan Öbrink <johan.obrink@gmail.com>",
   "dependencies": {
     "serialport": "*",
-    "nmea": "*"
+    "nmea": "*",
+    "express": "*",
+    "jade": "*",
+    "now": "*"
   },
   "devDependencies": {},
   "engines": {

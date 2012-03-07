@@ -9,6 +9,7 @@
   Tracker = (function() {
 
     function Tracker() {
+      this.nmeaToDecimal = __bind(this.nmeaToDecimal, this);
       this.parseSatelliteListMessage = __bind(this.parseSatelliteListMessage, this);
       this.onData = __bind(this.onData, this);
     }
@@ -44,7 +45,17 @@
           case 'satellite-list-partial':
             return this.parseSatelliteListMessage(data);
           case 'fix':
-            if (!!this.fixCallback) return this.fixCallback(null, data);
+            if (this.fixCallback != null) {
+              if (!!data.lon && !!data.lat) {
+                data.lat = this.nmeaToDecimal(data.lat);
+                data.lon = this.nmeaToDecimal(data.lon);
+                return this.fixCallback(null, data);
+              } else {
+                return console.log(data);
+              }
+            } else {
+              return console.log('Noone is listening to me!!!');
+            }
         }
       }
     };
@@ -60,6 +71,13 @@
         this.satelliteListCallback(null, this.satelliteListPartial);
         return this.satelliteListPartial = null;
       }
+    };
+
+    Tracker.prototype.nmeaToDecimal = function(val) {
+      var deg, min;
+      deg = val.substring(0, val.indexOf('.' - 2));
+      min = val.substring(deg.length);
+      return parseInt(deg, 10) + (parseFloat(min, 10) / 60);
     };
 
     return Tracker;
