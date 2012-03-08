@@ -1,4 +1,6 @@
 #Raspberry boat
+Build status: [![Build Status](https://secure.travis-ci.org/JohanObrink/RaspberryBoat.png?branch=master)](http://travis-ci.org/JohanObrink/RaspberryBoat)
+
 ##Parts
 
 1. RC Boat - KJ
@@ -11,5 +13,3 @@
 8. Servo controller - KJ
 9. Raspberry Pi
 10. Flood lights
-
-##Tested with Travis CI
