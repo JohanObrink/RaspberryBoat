@@ -1,5 +1,5 @@
 #Raspberry boat
-Build status: [![Build Status](https://secure.travis-ci.org/JohanObrink/RaspberryBoat.png?branch=master)](http://travis-ci.org/JohanObrink/RaspberryBoat)
+[![Build Status](https://secure.travis-ci.org/JohanObrink/RaspberryBoat.png?branch=master)](http://travis-ci.org/JohanObrink/RaspberryBoat)
 
 ##Parts
 
