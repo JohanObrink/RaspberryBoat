@@ -1,18 +1,59 @@
 <html>
 	<head>
 		<title>Raspberry boat</title>
+    <link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css"
+      rel="stylesheet" type="text/css">
 	</head>
 	<body>
+
+		<div id="map_canvas"></div>
+
 		<script type="text/javascript" src="http://localhost:8080/nowjs/now.js"></script>
+		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true"></script>
 
 		<script type="text/javascript">
-		  now.ready(function(){
-		    // "Hello World!" will print on server
-		  });
+			var map;
 
-		  now.fix = function(data) {
-		  	console.log(data);
-		  }
+			function initialize() {
+				var myOptions = {
+				  zoom: 17,
+				  mapTypeId: google.maps.MapTypeId.ROADMAP
+				};
+				map = new google.maps.Map(document.getElementById('map_canvas'),
+				    myOptions);
+			}
+
+			google.maps.event.addDomListener(window, 'load', initialize);
+		</script>
+
+		<script type="text/javascript">
+			var apiKey = 'AIzaSyC4pr46Z0HwJNejoIrDBaEDVc9zTyw863I';
+			var marker;
+
+			now.ready(function(){
+			// "Hello World!" will print on server
+			});
+
+			now.fix = function(data) {
+				console.log(data);
+
+				if(map) {
+					var pos = new google.maps.LatLng(data.lat, data.lon);
+
+					if(!marker)
+					    marker = new google.maps.Marker({
+						    position: pos,
+						    map: map,
+						    title: 'GPS: ' + data.lat + ', ' + data.lon
+						});
+					else {
+						marker.setPosition(pos);
+						marker.setTitle('GPS: ' + data.lat + ', ' + data.lon);
+					}
+
+				    map.setCenter(pos);
+				}
+			}
 		</script>
 	</body>
 </html>

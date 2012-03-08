@@ -31,7 +31,7 @@ class Tracker
               data.lon = @nmeaToDecimal data.lon
               @fixCallback null, data
             else
-              console.log data
+              console.log 'No fix'
           else console.log 'Noone is listening to me!!!'
 
   parseSatelliteListMessage: (data) =>
@@ -49,7 +49,6 @@ class Tracker
     #10141.82531
     deg = val.substring 0, val.indexOf('.') - 2
     min = val.substring deg.length
-    console.log(val + ': ' + deg + ' , ' + min);
 
     parseInt(deg, 10) + (parseFloat(min) / 60) 
 

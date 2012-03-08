@@ -26,6 +26,7 @@ tracker.onSatelliteList(function(err, data) {
 });
 
 tracker.onFix(function(err, data) {
+	console.log(data.lat + ', ' + data.lon);
 	if(everyone.now.fix)
 		everyone.now.fix(data);
 });

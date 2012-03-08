@@ -51,7 +51,7 @@
                 data.lon = this.nmeaToDecimal(data.lon);
                 return this.fixCallback(null, data);
               } else {
-                return console.log(data);
+                return console.log('No fix');
               }
             } else {
               return console.log('Noone is listening to me!!!');
@@ -77,7 +77,6 @@
       var deg, min;
       deg = val.substring(0, val.indexOf('.') - 2);
       min = val.substring(deg.length);
-      console.log(val + ': ' + deg + ' , ' + min);
       return parseInt(deg, 10) + (parseFloat(min) / 60);
     };
 
