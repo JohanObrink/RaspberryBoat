@@ -20,4 +20,4 @@ vows.describe('GpsTracker').addBatch({
             assert.equal(topic, 101.6970885);
         }
     }
-}).run(); // Run it
+}).export(module);

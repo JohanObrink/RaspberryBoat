@@ -19,5 +19,8 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/JohanObrink/RaspberryBoat.git"
+  },
+  "scripts": {
+    "test": "vows --spec test/*.js"
   }
 }
