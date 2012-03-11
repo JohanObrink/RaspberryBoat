@@ -1,7 +1,13 @@
-map = new Map $('#map_canvas')
+map = new rbb.Map()
 
-now.ready () ->
+$(document).ready () ->	
+	#map.initialize $('#map_canvas')
+	map.initialize document.getElementById 'map_canvas'
 
-now.fix (data) ->
-	console.log data
-	map.setPosition data.lat, data.lon, data.horDilution
+	now.ready () ->
+
+	now.fix = (data) ->
+		console.log data
+		map.setPosition data.lat, data.lon, data.horDilution
+
+	this

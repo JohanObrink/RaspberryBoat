@@ -1,15 +1,13 @@
-class Map
+module 'rbb'
 
-	constructor: (@canvas) ->
+rbb.Map = class
 
-	initialize: () ->
+	constructor: () ->
+
+	initialize: (@canvas) ->
 		options = { zoom: 18, mapTypeId: google.maps.MapTypeId.ROADMAP }
-		@map = google.maps.Map @canvas, options
+		@map = new google.maps.Map @canvas, options
 		@map.setCenter new google.maps.LatLng(59.340832, 18.011712)
-
-	$.ready @initialize
-
-	apiKey = 'AIzaSyC4pr46Z0HwJNejoIrDBaEDVc9zTyw863I';
 
 	setPosition: (lat, lon, presicion) ->
 		pos = new google.maps.LatLng lat, lon

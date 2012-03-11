@@ -1,28 +1,23 @@
 (function() {
-  var Map;
 
-  Map = (function() {
-    var apiKey;
+  module('rbb');
 
-    function Map(canvas) {
-      this.canvas = canvas;
-    }
+  rbb.Map = (function() {
 
-    Map.prototype.initialize = function() {
+    function _Class() {}
+
+    _Class.prototype.initialize = function(canvas) {
       var options;
+      this.canvas = canvas;
       options = {
         zoom: 18,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
-      this.map = google.maps.Map(this.canvas, options);
+      this.map = new google.maps.Map(this.canvas, options);
       return this.map.setCenter(new google.maps.LatLng(59.340832, 18.011712));
     };
 
-    $.ready(Map.initialize);
-
-    apiKey = 'AIzaSyC4pr46Z0HwJNejoIrDBaEDVc9zTyw863I';
-
-    Map.prototype.setPosition = function(lat, lon, presicion) {
+    _Class.prototype.setPosition = function(lat, lon, presicion) {
       var pos;
       pos = new google.maps.LatLng(lat, lon);
       if (this.map != null) {
@@ -54,7 +49,7 @@
       }
     };
 
-    return Map;
+    return _Class;
 
   })();
 
