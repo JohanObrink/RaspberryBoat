@@ -52,6 +52,11 @@ app.listen(8080);
 var nowjs = require("now");
 var everyone = nowjs.initialize(app);
 
+setInterval(function() {
+	if(everyone.now.fix)
+		everyone.now.fix({ lat: 59.3399, lon: 18.0085, horDilution: 1.9 });
+}, 2000);
+
 
 tracker.onSatelliteList(function(err, data) {
 	//console.log(data);
