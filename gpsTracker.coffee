@@ -52,6 +52,11 @@ class Tracker
 
     parseInt(deg, 10) + (parseFloat(min) / 60) 
 
+  runTest: () ->
+    require('fs').open('./files.log', '\r\n', (err, line) ->
+      console.log nmea.parse line
+
+
 
 
 exports.createTracker = () ->

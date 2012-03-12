@@ -13,3 +13,6 @@
 8. Servo controller - KJ
 9. Raspberry Pi
 10. Flood lights
+
+Video streaming - handled through the OS?
+http://delog.wordpress.com/2011/04/14/stream-webm-video-over-rtp-with-gstreamer/

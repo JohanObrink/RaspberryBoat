@@ -19,7 +19,7 @@ var nowjs = require("now");
 var everyone = nowjs.initialize(app);
 
 
-
+tracker.startTest();
 
 tracker.onSatelliteList(function(err, data) {
 	//console.log(data);
