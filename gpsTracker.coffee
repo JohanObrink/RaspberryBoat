@@ -1,5 +1,6 @@
 serialport = require 'serialport'
 nmea = require 'nmea'
+reader = require('./fileLineReader.js').FileLineReader
 
 class Tracker
 
@@ -53,9 +54,39 @@ class Tracker
     parseInt(deg, 10) + (parseFloat(min) / 60) 
 
   runTest: () ->
-    require('fs').open('./files.log', '\r\n', (err, line) ->
-      console.log nmea.parse line
+    @flr = new reader './files/test.log', 200
+    @readLine()
+    this
 
+  readLine: () =>
+    if @flr.hasNextLine
+      line = @flr.nextLine()
+      data = nmea.parse line
+
+      if !data
+        console.log 'Line end'
+        return
+
+      if !data.timestamp
+        @onData line
+        setTimeout @readLine, 5
+        return
+      else
+        now = parseFloat data.timestamp
+        if !@lastTimestamp
+          timeout = 5
+        else
+          timeout = Math.max 1000 * (now - @lastTimestamp), 5
+        @lastTimestamp = now
+        setTimeout @emitLine, timeout, line
+    else
+      console.log 'Line end'
+
+  this
+
+  emitLine: (line) =>
+    @onData line
+    @readLine()
 
 
 
