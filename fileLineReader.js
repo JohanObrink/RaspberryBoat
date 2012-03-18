@@ -1,64 +1,65 @@
-// Module: FileLineReader  
-// Constructor: FileLineReader(filename, bufferSize = 8192)  
-// Methods: hasNextLine() -> boolean  
-//          nextLine() -> String  
-//  
-//  
-var fs = require("fs"); 
-  
-exports.FileLineReader = function(filename, bufferSize) {  
-  
-    if(!bufferSize) {  
-        bufferSize = 8192;  
-    }  
-  
-    //private:  
-    var currentPositionInFile = 0;  
-    var buffer = "";  
-    var fd = fs.openSync(filename, "r");  
-  
-  
-    // return -1  
-    // when EOF reached  
-    // fills buffer with next 8192 or less bytes  
-    var fillBuffer = function(position) {  
-  
-        var res = fs.readSync(fd, bufferSize, position, "ascii");  
-  
-        buffer += res[0];  
-        if (res[1] == 0) {  
-            return -1;  
-        }  
-        return position + res[1];  
-  
-    };  
-  
-    currentPositionInFile = fillBuffer(0);  
-  
-    //public:  
-    this.hasNextLine = function() {  
-        while (buffer.indexOf("\n") == -1) {  
-            currentPositionInFile = fillBuffer(currentPositionInFile);  
-            if (currentPositionInFile == -1) {  
-                return false;  
-            }  
-        }  
-  
-        if (buffer.indexOf("\n") > -1) {  
-  
-            return true;  
-        }  
-        return false;  
-    };  
-  
-    //public:  
-    this.nextLine = function() {  
-        var lineEnd = buffer.indexOf("\n");  
-        var result = buffer.substring(0, lineEnd);  
-  
-        buffer = buffer.substring(result.length + 1, buffer.length);  
-        return result;  
-    };  
-  
-    return this;  
-};
+(function() {
+  var FileLineReader, fs;
+
+  fs = require('fs');
+
+  FileLineReader = (function() {
+
+    FileLineReader.position = 0;
+
+    FileLineReader._eof = false;
+
+    FileLineReader.fd = null;
+
+    FileLineReader.saved = null;
+
+    function FileLineReader(path, encoding) {
+      this.path = path;
+      this.encoding = encoding;
+      if (!this.encoding) this.encoding = 'ascii';
+      this.fd = fs.openSync(this.path, 'r');
+    }
+
+    FileLineReader.prototype.readLine = function() {
+      var c, lf, next, result;
+      if (this._eof) return null;
+      if (this.saved != null) {
+        result = this.saved;
+        this.saved = null;
+      } else {
+        result = '';
+      }
+      lf = false;
+      while (!lf && !this._eof) {
+        next = fs.readSync(this.fd, 1, this.position++, this.encoding);
+        if (next[1] === 1) {
+          c = next[0];
+          if (c === '\r' || c === '\n') {
+            if (c === '\r') {
+              this.saved = fs.readSync(this.fd, 1, this.position, this.encoding)[0];
+              if (this.saved === '\n') this.saved = null;
+            }
+            lf = true;
+          } else {
+            result += c;
+          }
+        } else {
+          this._eof = true;
+        }
+      }
+      return result;
+    };
+
+    FileLineReader.prototype.eof = function() {
+      return this._eof;
+    };
+
+    return FileLineReader;
+
+  })();
+
+  exports.createReader = function(path, encoding) {
+    return new FileLineReader(path, encoding);
+  };
+
+}).call(this);

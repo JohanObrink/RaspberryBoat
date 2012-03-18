@@ -1,12 +1,10 @@
 (function() {
-  var Tracker, nmea, reader, serialport,
+  var Tracker, nmea, serialport,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   serialport = require('serialport');
 
   nmea = require('nmea');
-
-  reader = require('./fileLineReader.js').FileLineReader;
 
   Tracker = (function() {
 
@@ -85,16 +83,18 @@
     };
 
     Tracker.prototype.runTest = function() {
-      this.flr = new reader('./files/test.log', 200);
+      this.flr = require('./fileLineReader.js').createReader('./files/test.log');
       this.readLine();
       return this;
     };
 
     Tracker.prototype.readLine = function() {
       var data, line, now, timeout;
-      if (this.flr.hasNextLine) {
-        line = this.flr.nextLine();
+      if (!this.flr.eof()) {
+        line = this.flr.readLine();
+        console.log(line);
         data = nmea.parse(line);
+        console.log(data);
         if (!data) {
           console.log('Line end');
           return;
