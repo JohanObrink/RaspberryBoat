@@ -5,9 +5,9 @@ $(document).ready () ->
 	map.initialize document.getElementById 'map_canvas'
 
 	now.ready () ->
-
-	now.fix = (data) ->
-		console.log data
-		map.setPosition data.lat, data.lon, data.horDilution
+		console.log 'ready'
+		now.gps.onFix = (data) ->
+			console.log data
+			map.setPosition data.lat, data.lon, data.horDilution
 
 	this
