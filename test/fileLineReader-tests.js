@@ -7,7 +7,7 @@
 
   fs = require('fs');
 
-  flr = require('../fileLineReader.js');
+  flr = require('../fileLineReader/fileLineReader.js');
 
   vows.describe('FileLineReader').addBatch({
     'when reading two lines separated by \\r': {

@@ -5,7 +5,7 @@
 
   assert = require('assert');
 
-  tracker = require('../gpsTracker.js').createTracker();
+  tracker = require('../gps/gpsTracker.js').createTracker();
 
   vows.describe('GpsTracker').addBatch({
     'when converting NMEA 0302.78469 to decimal': {

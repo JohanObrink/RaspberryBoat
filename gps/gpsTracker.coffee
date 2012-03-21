@@ -12,6 +12,10 @@ class Tracker
     catch error
       callback(error)
     this
+
+  disconnect: () ->
+    delete port
+    this
   
   onSatelliteList: (callback) ->
     @satelliteListCallback = callback
@@ -22,6 +26,7 @@ class Tracker
   onData: (line) =>
     data = nmea.parse line
     if data?
+      console.log data
       switch data.type
         when 'satellite-list-partial' then @parseSatelliteListMessage data
         when 'fix'
@@ -30,9 +35,6 @@ class Tracker
               data.lat = @nmeaToDecimal data.lat
               data.lon = @nmeaToDecimal data.lon
               @fixCallback null, data
-            else
-              console.log 'No fix'
-          else console.log 'Noone is listening to me!!!'
 
   parseSatelliteListMessage: (data) =>
     if @satelliteListPartial?
@@ -52,44 +54,7 @@ class Tracker
 
     parseInt(deg, 10) + (parseFloat(min) / 60) 
 
-  runTest: () ->
-    @flr = require('./fileLineReader.js').createReader './files/test.log'
-    @readLine()
-    this
 
-  readLine: () =>
-    unless @flr.eof()
-      line = @flr.readLine()
-      console.log line
-      data = nmea.parse line
-      console.log data
-
-      if !data
-        console.log 'Line end'
-        return
-
-      if !data.timestamp
-        @onData line
-        setTimeout @readLine, 5
-        return
-      else
-        now = parseFloat data.timestamp
-        if !@lastTimestamp
-          timeout = 5
-        else
-          timeout = Math.max 1000 * (now - @lastTimestamp), 5
-        @lastTimestamp = now
-        setTimeout @emitLine, timeout, line
-    else
-      console.log 'Line end'
-
-  this
-
-  emitLine: (line) =>
-    @onData line
-    @readLine()
-
-
-
+exports.Tracker = Tracker
 exports.createTracker = () ->
   new Tracker() 

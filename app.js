@@ -1,13 +1,5 @@
 
-var tracker = require('./gpsTracker.js').createTracker();
-
-tracker.connect('/dev/cu.usbserial', 4800, function(err){
-	if(err)
-		console.log(err);
-	else
-		console.log('Connected');
-});
-
+var tracker = require('./gps/testTracker.js').createTracker('./files/test.log', true);
 
 var express = require('express');
 
@@ -47,23 +39,29 @@ app.get('/', function(req, res) {
 	res.render('index');
 });
 
-app.listen(8088);
+app.listen(8080);
 
 var nowjs = require("now");
 var everyone = nowjs.initialize(app);
 
-
-everyone.now.runTest = function() {
-	tracker.runTest();
+everyone.now.connectGps = function() {
+	tracker.connect('/dev/cu.usbserial', 4800, function(err){
+		if(err)
+			console.log(err);
+		else
+			console.log('Connected');
+	});
 }
 
+everyone.now.connectGps = function() {
+	tracker.disconnect();
+}
 
 tracker.onSatelliteList(function(err, data) {
 	//console.log(data);
 });
 
 tracker.onFix(function(err, data) {
-	console.log(data.lat + ', ' + data.lon);
 	if(everyone.now.fix)
 		everyone.now.fix(data);
 });

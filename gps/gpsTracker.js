@@ -9,8 +9,6 @@
   Tracker = (function() {
 
     function Tracker() {
-      this.emitLine = __bind(this.emitLine, this);
-      this.readLine = __bind(this.readLine, this);
       this.nmeaToDecimal = __bind(this.nmeaToDecimal, this);
       this.parseSatelliteListMessage = __bind(this.parseSatelliteListMessage, this);
       this.onData = __bind(this.onData, this);
@@ -31,6 +29,11 @@
       return this;
     };
 
+    Tracker.prototype.disconnect = function() {
+      delete port;
+      return this;
+    };
+
     Tracker.prototype.onSatelliteList = function(callback) {
       return this.satelliteListCallback = callback;
     };
@@ -43,6 +46,7 @@
       var data;
       data = nmea.parse(line);
       if (data != null) {
+        console.log(data);
         switch (data.type) {
           case 'satellite-list-partial':
             return this.parseSatelliteListMessage(data);
@@ -52,11 +56,7 @@
                 data.lat = this.nmeaToDecimal(data.lat);
                 data.lon = this.nmeaToDecimal(data.lon);
                 return this.fixCallback(null, data);
-              } else {
-                return console.log('No fix');
               }
-            } else {
-              return console.log('Noone is listening to me!!!');
             }
         }
       }
@@ -82,51 +82,11 @@
       return parseInt(deg, 10) + (parseFloat(min) / 60);
     };
 
-    Tracker.prototype.runTest = function() {
-      this.flr = require('./fileLineReader.js').createReader('./files/test.log');
-      this.readLine();
-      return this;
-    };
-
-    Tracker.prototype.readLine = function() {
-      var data, line, now, timeout;
-      if (!this.flr.eof()) {
-        line = this.flr.readLine();
-        console.log(line);
-        data = nmea.parse(line);
-        console.log(data);
-        if (!data) {
-          console.log('Line end');
-          return;
-        }
-        if (!data.timestamp) {
-          this.onData(line);
-          setTimeout(this.readLine, 5);
-        } else {
-          now = parseFloat(data.timestamp);
-          if (!this.lastTimestamp) {
-            timeout = 5;
-          } else {
-            timeout = Math.max(1000 * (now - this.lastTimestamp), 5);
-          }
-          this.lastTimestamp = now;
-          return setTimeout(this.emitLine, timeout, line);
-        }
-      } else {
-        return console.log('Line end');
-      }
-    };
-
-    Tracker;
-
-    Tracker.prototype.emitLine = function(line) {
-      this.onData(line);
-      return this.readLine();
-    };
-
     return Tracker;
 
   })();
+
+  exports.Tracker = Tracker;
 
   exports.createTracker = function() {
     return new Tracker();

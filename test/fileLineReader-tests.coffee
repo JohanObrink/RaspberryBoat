@@ -1,7 +1,7 @@
 vows = require 'vows'
 assert = require 'assert'
 fs = require 'fs'
-flr = require('../fileLineReader.js')
+flr = require('../fileLineReader/fileLineReader.js')
 
 # Test suite
 vows.describe('FileLineReader').addBatch({

@@ -1,6 +1,6 @@
 vows = require 'vows'
 assert = require 'assert'
-tracker = require('../gpsTracker.js').createTracker()
+tracker = require('../gps/gpsTracker.js').createTracker()
 
 # Test suite
 vows.describe('GpsTracker').addBatch({
