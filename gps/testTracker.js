@@ -53,7 +53,7 @@
           if (!this.lastTimestamp) {
             timeout = 5;
           } else {
-            timeout = Math.max(1000 * (now - this.lastTimestamp), 5);
+            timeout = Math.min(Math.max(1000 * (now - this.lastTimestamp), 5), 1000);
           }
           this.lastTimestamp = now;
         }
@@ -78,7 +78,7 @@
   })(Tracker);
 
   exports.createTracker = function(file, looped) {
-    return new TestTracker(file, looped);
+    return new TestTracker(file, !!looped);
   };
 
 }).call(this);

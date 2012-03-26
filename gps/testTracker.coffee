@@ -36,10 +36,10 @@ class TestTracker extends Tracker
 				if !@lastTimestamp
 					timeout = 5
 				else
-					timeout = Math.max 1000 * (now - @lastTimestamp), 5
+					timeout = Math.min Math.max(1000 * (now - @lastTimestamp), 5), 1000
 				
 				@lastTimestamp = now
-			
+
 			@timeout = setTimeout @emitLine, timeout, line
 		else
 			console.log 'Line end'
@@ -54,4 +54,4 @@ class TestTracker extends Tracker
 		@readLine()
 
 exports.createTracker = (file, looped) ->
-  new TestTracker(file, looped) 
+  new TestTracker(file, !!looped) 

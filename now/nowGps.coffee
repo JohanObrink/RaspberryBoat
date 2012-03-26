@@ -1,7 +1,7 @@
 class NowGps
 
 	constructor: (@now) ->
-		@tracker = require('../gps/testTracker.js').createTracker './files/test.log', true
+		@tracker = require('../gps/testTracker.js').createTracker './files/20120326_2322.log', true
 
 		# satellite list
 		@tracker.on 'satellite-list', (err, data) =>

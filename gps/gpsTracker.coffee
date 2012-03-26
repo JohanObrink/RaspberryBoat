@@ -30,7 +30,7 @@ class Tracker
       @callbacks[type](err, data)
     this
 
-  onData: (line) ->
+  onData: (line) =>
     @call 'data', null, line
     data = nmea.parse line
     if data?

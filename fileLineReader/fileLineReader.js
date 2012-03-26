@@ -5,30 +5,21 @@
 
   FileLineReader = (function() {
 
-    FileLineReader.position = 0;
-
-    FileLineReader._eof = false;
-
-    FileLineReader.fd = null;
-
-    FileLineReader.saved = null;
-
     function FileLineReader(path, encoding) {
       this.path = path;
       this.encoding = encoding;
+      this.position = 0;
+      this._eof = false;
+      this.fd = null;
+      this.saved = null;
       if (!this.encoding) this.encoding = 'ascii';
       this.fd = fs.openSync(this.path, 'r');
     }
 
     FileLineReader.prototype.readLine = function() {
-      var c, lf, next, result;
+      var c, lf, next, nextChar, result;
       if (this._eof) return null;
-      if (this.saved != null) {
-        result = this.saved;
-        this.saved = null;
-      } else {
-        result = '';
-      }
+      result = '';
       lf = false;
       while (!lf && !this._eof) {
         next = fs.readSync(this.fd, 1, this.position++, this.encoding);
@@ -36,8 +27,8 @@
           c = next[0];
           if (c === '\r' || c === '\n') {
             if (c === '\r') {
-              this.saved = fs.readSync(this.fd, 1, this.position, this.encoding)[0];
-              if (this.saved === '\n') this.saved = null;
+              nextChar = fs.readSync(this.fd, 1, this.position, this.encoding)[0];
+              if (nextChar === '\n') this.position++;
             }
             lf = true;
           } else {

@@ -2,12 +2,13 @@ fs = require 'fs'
 
 class FileLineReader
 	
-	@position = 0
-	@_eof = false
-	@fd = null
-	@saved = null
-	
 	constructor: (@path, @encoding) ->
+	
+		@position = 0
+		@_eof = false
+		@fd = null
+		@saved = null
+
 		if !@encoding
 			@encoding = 'ascii'
 		@fd = fs.openSync @path, 'r'
@@ -19,11 +20,7 @@ class FileLineReader
 
 		# Read sync seems to move forward without ability to seek
 		# so as a workaround seeks are saved for next call
-		if @saved?
-			result = @saved
-			@saved = null
-		else
-			result = ''
+		result = ''
 		lf = false
 
 		# Read to line or file end
@@ -40,9 +37,9 @@ class FileLineReader
 
 					# If \r\n style lines
 					if c is '\r'
-						@saved = fs.readSync(@fd, 1, @position, @encoding)[0]
-						if @saved is '\n'
-							@saved = null
+						nextChar = fs.readSync(@fd, 1, @position, @encoding)[0]
+						if nextChar is '\n'
+							@position++
 					
 					lf = true
 				# Append to result
@@ -51,7 +48,7 @@ class FileLineReader
 			# At end of file
 			else
 				@_eof = true
-
+			
 		result
 
 	eof: () ->

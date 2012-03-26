@@ -1,5 +1,6 @@
 (function() {
-  var Tracker, nmea, serialport;
+  var Tracker, nmea, serialport,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   serialport = require('serialport');
 
@@ -7,7 +8,9 @@
 
   Tracker = (function() {
 
-    function Tracker() {}
+    function Tracker() {
+      this.onData = __bind(this.onData, this);
+    }
 
     Tracker.prototype.connect = function(path, baud, callback) {
       var port;

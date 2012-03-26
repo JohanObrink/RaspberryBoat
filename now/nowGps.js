@@ -9,7 +9,7 @@
       this.now = now;
       this.disconnect = __bind(this.disconnect, this);
       this.connect = __bind(this.connect, this);
-      this.tracker = require('../gps/testTracker.js').createTracker('./files/test.log', true);
+      this.tracker = require('../gps/testTracker.js').createTracker('./files/20120326_2322.log', true);
       this.tracker.on('satellite-list', function(err, data) {
         console.log('got satellites');
         if (!!_this.now.gps.onSatelliteList) {

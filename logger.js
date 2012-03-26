@@ -1,4 +1,4 @@
-var tracker = require('./gps/testTracker.js').createTracker('./files/test.log');
+var tracker = require('./gps/gpsTracker.js').createTracker('./files/test.log');
 var fileName = dateStr(new Date()) + '.log';
 var logger = require('./gps/gpsLogger.js').createLogger(tracker, './files/' + fileName);
 tracker.connect('/dev/cu.usbserial', 4800, function(err) {
