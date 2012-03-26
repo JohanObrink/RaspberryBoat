@@ -6,8 +6,10 @@ $(document).ready () ->
 
 	now.ready () ->
 		console.log 'ready'
-		now.gps.onFix = (data) ->
+		now.gps.onFix = (err, data) =>
 			console.log data
 			map.setPosition data.lat, data.lon, data.horDilution
+		now.gps.onSatelliteList = (err, data) =>
+			console.log data
 
 	this

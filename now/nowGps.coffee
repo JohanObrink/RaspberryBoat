@@ -2,38 +2,34 @@ class NowGps
 
 	constructor: (@now) ->
 		@tracker = require('../gps/testTracker.js').createTracker './files/test.log', true
-		
-		@now.gps = {
-			connect: (callback) ->
-				@connect callback
-			disconnect: () ->
-				@disconnect
-		}
 
-		@setupListeners @now.gps
+		# satellite list
+		@tracker.on 'satellite-list', (err, data) =>
+			console.log 'got satellites'
+			unless !@now.gps.onSatelliteList
+				@now.gps.onSatelliteList err, data
+			else
+				console.log 'Noone is listening for satelliteList: ' + @now.gps.onSatelliteList
 
-	connect: (callback) ->
+		# fix
+		@tracker.on 'fix', (err, data) =>
+			console.log 'got fix'
+			unless !@now.gps.onFix
+				@now.gps.onFix err, data
+			else
+				console.log 'Noone is listening for fix: ' + @now.gps.onFix
+
+	connect: (callback) =>
 		@tracker.connect '/dev/cu.usbserial', 4800, (err) ->
 			unless !err
 				console.log err
 			else
-				console.log Connected
+				console.log 'Connected'
 
 			callback(err) unless !callback
 
-	disconnect: () ->
+	disconnect: () =>
 		@tracker.disconnect()
 
-	setupListeners: (gps) ->
-
-		# satellite list
-		@tracker.onSatelliteList = (err, data) ->
-			gps.onSatelliteList(err, data) unless !gps.onSatelliteList
-
-		# fix
-		@tracker.onFix = (err, data) ->
-			gps.onFix(err, data) unless !gps.onFix
-
 module.exports.connect = (now) ->
-	console.log 'connect NowGps to ' + now
-	new NowGps(now)
+	now.gps = new NowGps(now)

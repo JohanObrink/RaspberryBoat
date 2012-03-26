@@ -1,20 +1,31 @@
 (function() {
-  var NowGps;
+  var NowGps,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   NowGps = (function() {
 
     function NowGps(now) {
+      var _this = this;
       this.now = now;
+      this.disconnect = __bind(this.disconnect, this);
+      this.connect = __bind(this.connect, this);
       this.tracker = require('../gps/testTracker.js').createTracker('./files/test.log', true);
-      this.now.gps = {
-        connect: function(callback) {
-          return this.connect(callback);
-        },
-        disconnect: function() {
-          return this.disconnect;
+      this.tracker.on('satellite-list', function(err, data) {
+        console.log('got satellites');
+        if (!!_this.now.gps.onSatelliteList) {
+          return _this.now.gps.onSatelliteList(err, data);
+        } else {
+          return console.log('Noone is listening for satelliteList: ' + _this.now.gps.onSatelliteList);
         }
-      };
-      this.setupListeners(this.now.gps);
+      });
+      this.tracker.on('fix', function(err, data) {
+        console.log('got fix');
+        if (!!_this.now.gps.onFix) {
+          return _this.now.gps.onFix(err, data);
+        } else {
+          return console.log('Noone is listening for fix: ' + _this.now.gps.onFix);
+        }
+      });
     }
 
     NowGps.prototype.connect = function(callback) {
@@ -22,7 +33,7 @@
         if (!!err) {
           console.log(err);
         } else {
-          console.log(Connected);
+          console.log('Connected');
         }
         if (!!callback) return callback(err);
       });
@@ -32,22 +43,12 @@
       return this.tracker.disconnect();
     };
 
-    NowGps.prototype.setupListeners = function(gps) {
-      this.tracker.onSatelliteList = function(err, data) {
-        if (!!gps.onSatelliteList) return gps.onSatelliteList(err, data);
-      };
-      return this.tracker.onFix = function(err, data) {
-        if (!!gps.onFix) return gps.onFix(err, data);
-      };
-    };
-
     return NowGps;
 
   })();
 
   module.exports.connect = function(now) {
-    console.log('connect NowGps to ' + now);
-    return new NowGps(now);
+    return now.gps = new NowGps(now);
   };
 
 }).call(this);

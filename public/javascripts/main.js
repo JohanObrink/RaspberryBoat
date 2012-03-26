@@ -6,10 +6,14 @@
   $(document).ready(function() {
     map.initialize(document.getElementById('map_canvas'));
     now.ready(function() {
+      var _this = this;
       console.log('ready');
-      return now.gps.onFix = function(data) {
+      now.gps.onFix = function(err, data) {
         console.log(data);
         return map.setPosition(data.lat, data.lon, data.horDilution);
+      };
+      return now.gps.onSatelliteList = function(err, data) {
+        return console.log(data);
       };
     });
     return this;

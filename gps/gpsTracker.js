@@ -1,6 +1,5 @@
 (function() {
-  var Tracker, nmea, serialport,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  var Tracker, nmea, serialport;
 
   serialport = require('serialport');
 
@@ -8,11 +7,7 @@
 
   Tracker = (function() {
 
-    function Tracker() {
-      this.nmeaToDecimal = __bind(this.nmeaToDecimal, this);
-      this.parseSatelliteListMessage = __bind(this.parseSatelliteListMessage, this);
-      this.onData = __bind(this.onData, this);
-    }
+    function Tracker() {}
 
     Tracker.prototype.connect = function(path, baud, callback) {
       var port;
@@ -23,8 +18,8 @@
         });
         callback(null);
         port.on('data', this.onData);
-      } catch (error) {
-        callback(error);
+      } catch (err) {
+        callback(err);
       }
       return this;
     };
@@ -34,29 +29,33 @@
       return this;
     };
 
-    Tracker.prototype.onSatelliteList = function(callback) {
-      return this.satelliteListCallback = callback;
+    Tracker.prototype.on = function(type, callback) {
+      if (this.callbacks == null) this.callbacks = {};
+      this.callbacks[type] = callback;
+      return this;
     };
 
-    Tracker.prototype.onFix = function(callback) {
-      return this.fixCallback = callback;
+    Tracker.prototype.call = function(type, err, data) {
+      var _ref;
+      if (((_ref = this.callbacks) != null ? _ref[type] : void 0) != null) {
+        this.callbacks[type](err, data);
+      }
+      return this;
     };
 
     Tracker.prototype.onData = function(line) {
       var data;
+      this.call('data', null, line);
       data = nmea.parse(line);
       if (data != null) {
-        console.log(data);
         switch (data.type) {
           case 'satellite-list-partial':
             return this.parseSatelliteListMessage(data);
           case 'fix':
-            if (this.fixCallback != null) {
-              if (!!data.lon && !!data.lat) {
-                data.lat = this.nmeaToDecimal(data.lat);
-                data.lon = this.nmeaToDecimal(data.lon);
-                return this.fixCallback(null, data);
-              }
+            if (!!data.lon && !!data.lat) {
+              data.lat = this.nmeaToDecimal(data.lat);
+              data.lon = this.nmeaToDecimal(data.lon);
+              return this.call('fix', null, data);
             }
         }
       }
@@ -70,7 +69,7 @@
       }
       if (this.satelliteListPartial.numMsgs === data.msgNum) {
         this.satelliteListPartial.msgNum = data.msgNum;
-        this.satelliteListCallback(null, this.satelliteListPartial);
+        this.call('satellite-list', null, this.satelliteListPartial);
         return this.satelliteListPartial = null;
       }
     };
