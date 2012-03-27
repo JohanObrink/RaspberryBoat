@@ -22,10 +22,10 @@ rbb.Map = class
 				if !@circle
 					@circle = new google.maps.Circle {
 						strokeColor: '#0000cc',
-						strokeOpacity: 0.8,
+						strokeOpacity: 0.5,
 						strokeWeight: 1,
 						fillColor: '#0000cc',
-						fillOpacity: 0.35,
+						fillOpacity: 0.2,
 						map: @map,
 						center: pos,
 						radius: 10 * precision

@@ -16,6 +16,15 @@
         return console.log(data);
       };
     });
+    $('.gps-connect').click(function() {
+      return now.gps.connect(function(err) {
+        if (err != null) {
+          return alert(err);
+        } else {
+          return $('.gps-connect').value = 'Disconnect';
+        }
+      });
+    });
     return this;
   });
 

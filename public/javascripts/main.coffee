@@ -12,4 +12,11 @@ $(document).ready () ->
 		now.gps.onSatelliteList = (err, data) =>
 			console.log data
 
+	$('.gps-connect').click () ->
+		now.gps.connect (err) ->
+			if err?
+				alert err
+			else
+				$('.gps-connect').value = 'Disconnect'
+
 	this
