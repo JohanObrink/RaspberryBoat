@@ -6,15 +6,13 @@
   $(document).ready(function() {
     map.initialize(document.getElementById('map_canvas'));
     now.ready(function() {
-      var _this = this;
       console.log('ready');
-      now.gps.onFix = function(err, data) {
-        console.log(data);
-        return map.setPosition(data.lat, data.lon, data.horDilution);
-      };
-      return now.gps.onSatelliteList = function(err, data) {
+      now.gps.on('nmea', function(err, data) {
         return console.log(data);
-      };
+      });
+      return now.gps.on('fix', function(err, data) {
+        return map.setPosition(data.lat, data.lon, data.horDilution);
+      });
     });
     $('.gps-connect').click(function() {
       return now.gps.connect(function(err) {

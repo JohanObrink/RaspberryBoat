@@ -5,27 +5,11 @@
   NowGps = (function() {
 
     function NowGps(now) {
-      var _this = this;
       this.now = now;
+      this.on = __bind(this.on, this);
       this.disconnect = __bind(this.disconnect, this);
       this.connect = __bind(this.connect, this);
       this.tracker = require('../gps/testTracker.js').createTracker('./files/20120326_2322.log', true);
-      this.tracker.on('satellite-list', function(err, data) {
-        console.log('got satellites');
-        if (!!_this.now.gps.onSatelliteList) {
-          return _this.now.gps.onSatelliteList(err, data);
-        } else {
-          return console.log('Noone is listening for satelliteList: ' + _this.now.gps.onSatelliteList);
-        }
-      });
-      this.tracker.on('fix', function(err, data) {
-        console.log('got fix');
-        if (!!_this.now.gps.onFix) {
-          return _this.now.gps.onFix(err, data);
-        } else {
-          return console.log('Noone is listening for fix: ' + _this.now.gps.onFix);
-        }
-      });
     }
 
     NowGps.prototype.connect = function(callback) {
@@ -41,6 +25,10 @@
 
     NowGps.prototype.disconnect = function() {
       return this.tracker.disconnect();
+    };
+
+    NowGps.prototype.on = function(event, callback) {
+      return this.tracker.on(event, callback);
     };
 
     return NowGps;

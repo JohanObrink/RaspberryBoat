@@ -50,6 +50,7 @@
       var data;
       this.call('data', null, line);
       data = nmea.parse(line);
+      this.call('nmea', null, data);
       if (data != null) {
         switch (data.type) {
           case 'satellite-list-partial':
@@ -65,6 +66,7 @@
     };
 
     Tracker.prototype.parseSatelliteListMessage = function(data) {
+      data.type = 'satellite-list';
       if (this.satelliteListPartial != null) {
         this.satelliteListPartial.satellites = this.satelliteListPartial.satellites.concat(data.satellites);
       } else {

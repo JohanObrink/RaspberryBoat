@@ -33,6 +33,7 @@ class Tracker
   onData: (line) =>
     @call 'data', null, line
     data = nmea.parse line
+    @call 'nmea', null, data
     if data?
       switch data.type
         when 'satellite-list-partial' then @parseSatelliteListMessage data
@@ -43,6 +44,7 @@ class Tracker
             @call 'fix', null, data
 
   parseSatelliteListMessage: (data) ->
+    data.type = 'satellite-list'
     if @satelliteListPartial?
       @satelliteListPartial.satellites = @satelliteListPartial.satellites.concat data.satellites
     else

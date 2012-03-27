@@ -1,16 +1,16 @@
 map = new rbb.Map()
 
-$(document).ready () ->	
-	#map.initialize $('#map_canvas')
+$(document).ready () ->
 	map.initialize document.getElementById 'map_canvas'
 
 	now.ready () ->
 		console.log 'ready'
-		now.gps.onFix = (err, data) =>
+
+		now.gps.on 'nmea', (err, data) ->
 			console.log data
+
+		now.gps.on 'fix', (err, data) ->
 			map.setPosition data.lat, data.lon, data.horDilution
-		now.gps.onSatelliteList = (err, data) =>
-			console.log data
 
 	$('.gps-connect').click () ->
 		now.gps.connect (err) ->
