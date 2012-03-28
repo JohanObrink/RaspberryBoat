@@ -37,11 +37,11 @@ class Tracker
     if data?
       switch data.type
         when 'satellite-list-partial' then @parseSatelliteListMessage data
-        when 'fix'
+        when 'nav-info', 'fix'
           if !!data.lon and !!data.lat
             data.lat = @nmeaToDecimal data.lat
             data.lon = @nmeaToDecimal data.lon
-            @call 'fix', null, data
+      @call data.type, null, data
 
   parseSatelliteListMessage: (data) ->
     data.type = 'satellite-list'

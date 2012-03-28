@@ -33,3 +33,18 @@ rbb.Map = class
 				else
 					@circle.setRadius(10 * precision)
 					@circle.setCenter pos
+
+	drawArrow: (lat, lon, trackTrue, speedKnots) ->
+		start = new google.maps.LatLng lat, lon
+		metersPerSecond = speedKnots * 0.514444444444444
+		end = google.maps.geometry.spherical.computeOffset(start, 20 * metersPerSecond, trackTrue)
+		if !@line
+			@line = new google.maps.Polyline {
+				path: [start, end],
+				strokeColor: '#ff0000',
+				strokeOpacity: 1.0,
+				strokeWeight: 1
+			}
+			@line.setMap @map
+		else
+			@line.setPath [start, end]

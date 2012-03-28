@@ -7,8 +7,11 @@
     map.initialize(document.getElementById('map_canvas'));
     now.ready(function() {
       console.log('ready');
-      now.gps.on('nmea', function(err, data) {
-        return console.log(data);
+      /*now.gps.on 'nmea', (err, data) ->
+      			console.log data
+      */
+      now.gps.on('nav-info', function(err, data) {
+        return map.drawArrow(data.lat, data.lon, data.trackTrue, data.speedKnots);
       });
       return now.gps.on('fix', function(err, data) {
         return map.setPosition(data.lat, data.lon, data.horDilution);

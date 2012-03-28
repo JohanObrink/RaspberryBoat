@@ -54,14 +54,16 @@
       if (data != null) {
         switch (data.type) {
           case 'satellite-list-partial':
-            return this.parseSatelliteListMessage(data);
+            this.parseSatelliteListMessage(data);
+            break;
+          case 'nav-info':
           case 'fix':
             if (!!data.lon && !!data.lat) {
               data.lat = this.nmeaToDecimal(data.lat);
               data.lon = this.nmeaToDecimal(data.lon);
-              return this.call('fix', null, data);
             }
         }
+        return this.call(data.type, null, data);
       }
     };
 

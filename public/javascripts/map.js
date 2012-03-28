@@ -50,6 +50,24 @@
       }
     };
 
+    _Class.prototype.drawArrow = function(lat, lon, trackTrue, speedKnots) {
+      var end, metersPerSecond, start;
+      start = new google.maps.LatLng(lat, lon);
+      metersPerSecond = speedKnots * 0.514444444444444;
+      end = google.maps.geometry.spherical.computeOffset(start, 20 * metersPerSecond, trackTrue);
+      if (!this.line) {
+        this.line = new google.maps.Polyline({
+          path: [start, end],
+          strokeColor: '#ff0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 1
+        });
+        return this.line.setMap(this.map);
+      } else {
+        return this.line.setPath([start, end]);
+      }
+    };
+
     return _Class;
 
   })();
