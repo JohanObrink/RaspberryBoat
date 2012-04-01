@@ -32,3 +32,6 @@ app.configure 'production', () ->
 # Routes
 app.get '/', (req, res) ->
   res.render 'index'
+
+app.get '/video', (req, res) ->
+  res.render 'video'

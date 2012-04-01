@@ -43,4 +43,8 @@
     return res.render('index');
   });
 
+  app.get('/video', function(req, res) {
+    return res.render('video');
+  });
+
 }).call(this);
