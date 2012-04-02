@@ -40,15 +40,22 @@
   };
 
   draw = function() {
-    var touch, _i, _len, _results;
+    var touch, txt, _i, _len, _results;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (touchable) {
       _results = [];
       for (_i = 0, _len = touches.length; _i < _len; _i++) {
         touch = touches[_i];
+        if (touch.identifier === throttleController) {
+          txt = 'throttle : ';
+        } else if (touch.identifier === rudderController) {
+          txt = 'rudder : ';
+        } else {
+          txt = 'unknown : ';
+        }
         ctx.beginPath();
         ctx.fillStyle = 'white';
-        ctx.fillText('touch id : ' + touch.identifier + ' x:' + touch.clientX + ' y:' + touch.clientY, touch.clientX + 30, touch.clientY - 30);
+        ctx.fillText(txt + ' x:' + touch.clientX + ' y:' + touch.clientY, touch.clientX + 30, touch.clientY - 30);
         ctx.beginPath();
         ctx.strokeStyle = 'cyan';
         ctx.lineWidth = 6;
@@ -84,29 +91,35 @@
   */
 
   onTouchStart = function(e) {
-    var touch, _i, _len, _results;
+    var touch, _i, _len, _ref;
     touches = e.touches;
-    _results = [];
-    for (_i = 0, _len = changedTouches.length; _i < _len; _i++) {
-      touch = changedTouches[_i];
-      if (!throttleController && touch.clientX < canvas.width / 2) {
+    _ref = e.changedTouches;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      touch = _ref[_i];
+      if (!throttleController && touch.clientX < (canvas.width / 2)) {
         throttleController = touch.identifier;
       }
-      if (!rudderController && touch.clientX > canvas.width / 2) {
-        _results.push(rudderController = touch.identifier);
-      } else {
-        _results.push(void 0);
+      if (!rudderController && touch.clientX > (canvas.width / 2)) {
+        rudderController = touch.identifier;
       }
     }
-    return _results;
+    return e;
+  };
+
+  onTouchEnd = function(e) {
+    var touch, _i, _len, _ref;
+    touches = e.touches;
+    _ref = e.changedTouches;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      touch = _ref[_i];
+      if (throttleController === touch.identifier) throttleController = null;
+      if (rudderController === touch.identifier) rudderController = null;
+    }
+    return e;
   };
 
   onTouchMove = function(e) {
     e.preventDefault();
-    return touches = e.touches;
-  };
-
-  onTouchEnd = function(e) {
     return touches = e.touches;
   };
 

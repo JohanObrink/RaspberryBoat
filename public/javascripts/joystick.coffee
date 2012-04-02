@@ -44,9 +44,16 @@ draw = () ->
 	
 		for touch in touches
 
+			if touch.identifier is throttleController
+				txt = 'throttle : '
+			else if touch.identifier is rudderController
+				txt = 'rudder : '
+			else
+				txt = 'unknown : '
+
 			ctx.beginPath()
 			ctx.fillStyle = 'white'
-			ctx.fillText 'touch id : ' + touch.identifier + ' x:' + touch.clientX + ' y:' + touch.clientY, touch.clientX+30, touch.clientY-30 
+			ctx.fillText txt + ' x:' + touch.clientX + ' y:' + touch.clientY, touch.clientX+30, touch.clientY-30 
 
 			ctx.beginPath()
 			ctx.strokeStyle = 'cyan'
@@ -83,21 +90,28 @@ draw = () ->
 
 onTouchStart = (e) ->
 	touches = e.touches
-	for touch in changedTouches
-		if !throttleController && touch.clientX < canvas.width / 2
+	for touch in e.changedTouches
+		if !throttleController && touch.clientX < (canvas.width / 2)
 			throttleController = touch.identifier
 
-		if !rudderController && touch.clientX > canvas.width / 2
+		if !rudderController && touch.clientX > (canvas.width / 2)
 			rudderController = touch.identifier
- 
-onTouchMove = (e) ->
-	# Prevent the browser from doing its default thing (scroll, zoom)
-	e.preventDefault()
-	touches = e.touches 
+	e
 
- 
+
 onTouchEnd = (e) ->
-   	touches = e.touches
+	touches = e.touches
+	for touch in e.changedTouches
+		if throttleController is touch.identifier
+			throttleController = null
+
+		if rudderController is touch.identifier
+			rudderController = null
+	e
+
+onTouchMove = (e) ->
+	e.preventDefault()
+	touches = e.touches
 
 
 onMouseMove = (event) ->
