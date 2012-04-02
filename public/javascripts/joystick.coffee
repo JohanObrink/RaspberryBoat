@@ -1,52 +1,66 @@
-canvas = null
-ctx = null
-container = null
+module 'rbb'
 
-mouseX = 0
-mouseY = 0
+rbb.Joystick = class
 
-throttleController = null
-rudderController = null
+	constructor: (@canvas, @now) ->
 
-# is this running in a touch capable environment?
-touchable = document.createTouch?
-touches = [] # array of touch vectors
+		@resetCanvas()
+
+		@ctx = canvas.getContext '2d'
+		@ctx.strokeStyle = '#ffffff'
+		@ctx.lineWidth = 2
+
+		@throttleController = null
+		@rudderController = null
+		@touches = [] # array of touch vectors
+
+		@throttle = 0
+		@rudder = 0
+
+		@canvas.addEventListener 'touchstart', @onTouchStart, false
+		@canvas.addEventListener 'touchmove', @onTouchMove, false
+		@canvas.addEventListener 'touchend', @onTouchEnd, false
+		
+		window.onorientationchange = @resetCanvas
+		window.onresize = @resetCanvas
+
+		setInterval @draw, (1000/35)
+		setInterval @send, (1000/5)
 
 
-resetCanvas = (e) ->
-	# resize the canvas - but remember - this clears the canvas too. 
-	canvas.width = window.innerWidth
-	canvas.height = window.innerHeight
-	
-	#make sure we scroll to the top left. 
-	window.scrollTo 0,0
+	resetCanvas: (e) =>
+		# resize the canvas - but remember - this clears the canvas too. 
+		@canvas.width = window.innerWidth
+		@canvas.height = window.innerHeight
+		
+		#make sure we scroll to the top left. 
+		window.scrollTo 0,0
 
+		e
 
-init = () ->
-	setupCanvas()
+	send: () =>
+		t = 0
+		r = 0
+		if !!@throttleController
+			t = @throttleController.clientY - @throttleController.originY
 
-	if touchable
-		canvas.addEventListener 'touchstart', onTouchStart, false
-		canvas.addEventListener 'touchmove', onTouchMove, false
-		canvas.addEventListener 'touchend', onTouchEnd, false
-		window.onorientationchange = resetCanvas
-		window.onresize = resetCanvas 
-	else	
-		canvas.addEventListener 'mousemove', onMouseMove, false
+		if !!@rudderController
+			r = @rudderController.clientX - @rudderController.originX
 
-	setInterval draw, (1000/35) 
+		if t is not @throttle or r is not @rudder
+			@now.control.set(t, r)
+			@throttle = t
+			@rudder = r
 
-draw = () ->
-  
-	ctx.clearRect 0, 0, canvas.width, canvas.height 
-	
-	if touchable
-	
+	draw: () =>
+	  
+		@ctx.clearRect 0, 0, @canvas.width, @canvas.height
+		
 		for touch in touches
 
-			if touch.identifier is throttleController
+			if touch.identifier is throttleController?.identifier
 				txt = 'throttle : '
-			else if touch.identifier is rudderController
+			else if touch.identifier is rudderController?.identifier
 				txt = 'rudder : '
 			else
 				txt = 'unknown : '
@@ -60,77 +74,56 @@ draw = () ->
 			ctx.lineWidth = 6
 			ctx.arc touch.clientX, touch.clientY, 40, 0, Math.PI*2, true 
 			ctx.stroke()
-	else
-		
-		ctx.fillStyle = 'white' 
-		ctx.fillText 'mouse : ' + mouseX + ', ' + mouseY, mouseX, mouseY
-		
-	#c.fillText("hello", 0,0); 
 
-###
- *	Touch event (e) properties : 
- *	e.touches: 			Array of touch objects for every finger currently touching the screen
- *	e.targetTouches: 	Array of touch objects for every finger touching the screen that
- *						originally touched down on the DOM object the transmitted the event.
- *	e.changedTouches	Array of touch objects for touches that are changed for this event. 					
- *						I'm not sure if this would ever be a list of more than one, but would 
- *						be bad to assume. 
- *
- *	Touch objects : 
- *
- *	identifier: An identifying number, unique to each touch event
- *	target: DOM object that broadcast the event
- *	clientX: X coordinate of touch relative to the viewport (excludes scroll offset)
- *	clientY: Y coordinate of touch relative to the viewport (excludes scroll offset)
- *	screenX: Relative to the screen
- *	screenY: Relative to the screen
- *	pageX: Relative to the full page (includes scrolling)
- *	pageY: Relative to the full page (includes scrolling)
-###	
+		ctx
 
-onTouchStart = (e) ->
-	touches = e.touches
-	for touch in e.changedTouches
-		if !throttleController && touch.clientX < (canvas.width / 2)
-			throttleController = touch.identifier
+	onTouchStart: (e) =>
+		touches = e.touches
+		for touch in e.changedTouches
+			if !@throttleController && touch.clientX < (canvas.width / 2)
+				@throttleController = touch
+				@throttleController.originY = @throttleController.clientY
 
-		if !rudderController && touch.clientX > (canvas.width / 2)
-			rudderController = touch.identifier
-	e
+			if !@rudderController && touch.clientX > (canvas.width / 2)
+				@rudderController = touch
+				@rudderController.originX = @rudderController.clientX
+		e
 
 
-onTouchEnd = (e) ->
-	touches = e.touches
-	for touch in e.changedTouches
-		if throttleController is touch.identifier
-			throttleController = null
+	onTouchEnd: (e) =>
+		touches = e.touches
+		for touch in e.changedTouches
+			if throttleController?.identifier is touch.identifier
+				throttleController = null
 
-		if rudderController is touch.identifier
-			rudderController = null
-	e
+			if rudderController?.identifier is touch.identifier
+				rudderController = null
+		e
 
-onTouchMove = (e) ->
-	e.preventDefault()
-	touches = e.touches
+	onTouchMove: (e) =>
+		e.preventDefault()
+		touches = e.touches
 
-
-onMouseMove = (event) ->
-	mouseX = event.offsetX
-	mouseY = event.offsetY
+		e
 
 
-setupCanvas = () ->	
-	canvas = document.createElement 'canvas'
-	ctx = canvas.getContext '2d'
-	container = document.createElement 'div'
-	container.className = 'container'
-
-	canvas.width = window.innerWidth; 
-	canvas.height = window.innerHeight; 
-	document.body.appendChild container
-	container.appendChild canvas
-	
-	ctx.strokeStyle = '#ffffff'
-	ctx.lineWidth = 2
-
-init()
+	###
+	 *	Touch event (e) properties : 
+	 *	e.touches: 			Array of touch objects for every finger currently touching the screen
+	 *	e.targetTouches: 	Array of touch objects for every finger touching the screen that
+	 *						originally touched down on the DOM object the transmitted the event.
+	 *	e.changedTouches	Array of touch objects for touches that are changed for this event. 					
+	 *						I'm not sure if this would ever be a list of more than one, but would 
+	 *						be bad to assume. 
+	 *
+	 *	Touch objects : 
+	 *
+	 *	identifier: An identifying number, unique to each touch event
+	 *	target: DOM object that broadcast the event
+	 *	clientX: X coordinate of touch relative to the viewport (excludes scroll offset)
+	 *	clientY: Y coordinate of touch relative to the viewport (excludes scroll offset)
+	 *	screenX: Relative to the screen
+	 *	screenY: Relative to the screen
+	 *	pageX: Relative to the full page (includes scrolling)
+	 *	pageY: Relative to the full page (includes scrolling)
+	###	
