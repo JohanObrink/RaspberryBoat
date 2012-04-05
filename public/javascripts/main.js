@@ -1,10 +1,12 @@
 (function() {
-  var map;
+  var joystick, map;
 
   map = new rbb.Map();
 
+  joystick = null;
+
   $(document).ready(function() {
-    map.initialize(document.getElementById('map_canvas'));
+    joystick = new rbb.Joystick($('#control')[0], now);
     now.ready(function() {
       console.log('ready');
       /*now.gps.on 'nmea', (err, data) ->

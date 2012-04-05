@@ -23,6 +23,8 @@
 		background-color:#111133;
 		display:block; 
 		position:absolute; 
+		top:0px;
+		left:0px;
 	}
 	.container {
 		width:auto;
@@ -34,7 +36,16 @@
 
 </head>
 <body>
-<script src="javascripts/joystick.js">
+
+	<div class="container">
+		<canvas id="control" width="768" height="1024"></canvas>
+	</div>
+
+<script src="javascripts/module.js"></script>
+<script src="javascripts/joystick.js"></script>
+<script>
+	var joystick = new rbb.Joystick(document.getElementById('control'));
+	console.log('hello');
 </script>
 </body>
 </html>

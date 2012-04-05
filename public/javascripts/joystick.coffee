@@ -3,10 +3,9 @@ module 'rbb'
 rbb.Joystick = class
 
 	constructor: (@canvas, @now) ->
-
 		@resetCanvas()
 
-		@ctx = canvas.getContext '2d'
+		@ctx = @canvas.getContext '2d'
 		@ctx.strokeStyle = '#ffffff'
 		@ctx.lineWidth = 2
 
@@ -17,6 +16,7 @@ rbb.Joystick = class
 		@throttle = 0
 		@rudder = 0
 
+		#@canvas.addEventListener 'mousemove', @onMouseMove, false
 		@canvas.addEventListener 'touchstart', @onTouchStart, false
 		@canvas.addEventListener 'touchmove', @onTouchMove, false
 		@canvas.addEventListener 'touchend', @onTouchEnd, false
@@ -27,12 +27,49 @@ rbb.Joystick = class
 		setInterval @draw, (1000/35)
 		setInterval @send, (1000/5)
 
+	onMouseMove: (e) =>
+		@touches = [e]
 
-	resetCanvas: (e) =>
-		# resize the canvas - but remember - this clears the canvas too. 
-		@canvas.width = window.innerWidth
-		@canvas.height = window.innerHeight
-		
+		e
+
+	onTouchStart: (e) =>
+		@msg = ''
+
+		@touches = e.touches
+		for touch in e.changedTouches
+
+			@msg += "client: #{touch.clientX}, #{touch.clientY}
+			page:  #{touch.pageX}, #{touch.pageY}
+			screen:  #{touch.screenX}, #{touch.screenY}"
+
+			if !@throttleController && touch.clientX < (@canvas.width / 2)
+				@throttleController = touch
+				@throttleController.originY = @throttleController.clientY
+
+			if !@rudderController && touch.clientX > (@canvas.width / 2)
+				@rudderController = touch
+				@rudderController.originX = @rudderController.clientX
+		e
+
+
+	onTouchEnd: (e) =>
+		@touches = e.touches
+		for touch in e.changedTouches
+			if @throttleController?.identifier is touch.identifier
+				@throttleController = null
+
+			if @rudderController?.identifier is touch.identifier
+				@rudderController = null
+		e
+
+	onTouchMove: (e) =>
+		e.preventDefault()
+		@touches = e.touches
+
+		e
+
+
+	resetCanvas: (e) =>		
 		#make sure we scroll to the top left. 
 		window.scrollTo 0,0
 
@@ -56,55 +93,31 @@ rbb.Joystick = class
 	  
 		@ctx.clearRect 0, 0, @canvas.width, @canvas.height
 		
-		for touch in touches
+		for touch in @touches
 
-			if touch.identifier is throttleController?.identifier
+			x = touch.clientX - $(touch.target).position().left
+			y = touch.clientY - $(touch.target).position().top
+
+			if touch.identifier is @throttleController?.identifier
 				txt = 'throttle : '
-			else if touch.identifier is rudderController?.identifier
+			else if touch.identifier is @rudderController?.identifier
 				txt = 'rudder : '
 			else
 				txt = 'unknown : '
 
-			ctx.beginPath()
-			ctx.fillStyle = 'white'
-			ctx.fillText txt + ' x:' + touch.clientX + ' y:' + touch.clientY, touch.clientX+30, touch.clientY-30 
+			@ctx.beginPath()
+			@ctx.fillStyle = 'white'
+			@ctx.fillText txt + ' x:' + x + ' y:' + y, x+30, y-30
 
-			ctx.beginPath()
-			ctx.strokeStyle = 'cyan'
-			ctx.lineWidth = 6
-			ctx.arc touch.clientX, touch.clientY, 40, 0, Math.PI*2, true 
-			ctx.stroke()
+			@ctx.fillText @msg, 10, 10
 
-		ctx
+			@ctx.beginPath()
+			@ctx.strokeStyle = 'cyan'
+			@ctx.lineWidth = 6
+			@ctx.arc x, y, 40, 0, Math.PI*2, true 
+			@ctx.stroke()
 
-	onTouchStart: (e) =>
-		touches = e.touches
-		for touch in e.changedTouches
-			if !@throttleController && touch.clientX < (canvas.width / 2)
-				@throttleController = touch
-				@throttleController.originY = @throttleController.clientY
-
-			if !@rudderController && touch.clientX > (canvas.width / 2)
-				@rudderController = touch
-				@rudderController.originX = @rudderController.clientX
-		e
-
-
-	onTouchEnd: (e) =>
-		touches = e.touches
-		for touch in e.changedTouches
-			if throttleController?.identifier is touch.identifier
-				throttleController = null
-
-			if rudderController?.identifier is touch.identifier
-				rudderController = null
-		e
-
-	onTouchMove: (e) =>
-		e.preventDefault()
-		touches = e.touches
-
-		e
+		@ctx
 
 
 	###

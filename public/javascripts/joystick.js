@@ -8,14 +8,15 @@
     function _Class(canvas, now) {
       this.canvas = canvas;
       this.now = now;
-      this.onTouchMove = __bind(this.onTouchMove, this);
-      this.onTouchEnd = __bind(this.onTouchEnd, this);
-      this.onTouchStart = __bind(this.onTouchStart, this);
       this.draw = __bind(this.draw, this);
       this.send = __bind(this.send, this);
       this.resetCanvas = __bind(this.resetCanvas, this);
+      this.onTouchMove = __bind(this.onTouchMove, this);
+      this.onTouchEnd = __bind(this.onTouchEnd, this);
+      this.onTouchStart = __bind(this.onTouchStart, this);
+      this.onMouseMove = __bind(this.onMouseMove, this);
       this.resetCanvas();
-      this.ctx = canvas.getContext('2d');
+      this.ctx = this.canvas.getContext('2d');
       this.ctx.strokeStyle = '#ffffff';
       this.ctx.lineWidth = 2;
       this.throttleController = null;
@@ -32,9 +33,54 @@
       setInterval(this.send, 1000 / 5);
     }
 
+    _Class.prototype.onMouseMove = function(e) {
+      this.touches = [e];
+      return e;
+    };
+
+    _Class.prototype.onTouchStart = function(e) {
+      var touch, _i, _len, _ref;
+      this.msg = '';
+      this.touches = e.touches;
+      _ref = e.changedTouches;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        touch = _ref[_i];
+        this.msg += "client: " + touch.clientX + ", " + touch.clientY + "			page:  " + touch.pageX + ", " + touch.pageY + "			screen:  " + touch.screenX + ", " + touch.screenY;
+        if (!this.throttleController && touch.clientX < (this.canvas.width / 2)) {
+          this.throttleController = touch;
+          this.throttleController.originY = this.throttleController.clientY;
+        }
+        if (!this.rudderController && touch.clientX > (this.canvas.width / 2)) {
+          this.rudderController = touch;
+          this.rudderController.originX = this.rudderController.clientX;
+        }
+      }
+      return e;
+    };
+
+    _Class.prototype.onTouchEnd = function(e) {
+      var touch, _i, _len, _ref, _ref2, _ref3;
+      this.touches = e.touches;
+      _ref = e.changedTouches;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        touch = _ref[_i];
+        if (((_ref2 = this.throttleController) != null ? _ref2.identifier : void 0) === touch.identifier) {
+          this.throttleController = null;
+        }
+        if (((_ref3 = this.rudderController) != null ? _ref3.identifier : void 0) === touch.identifier) {
+          this.rudderController = null;
+        }
+      }
+      return e;
+    };
+
+    _Class.prototype.onTouchMove = function(e) {
+      e.preventDefault();
+      this.touches = e.touches;
+      return e;
+    };
+
     _Class.prototype.resetCanvas = function(e) {
-      this.canvas.width = window.innerWidth;
-      this.canvas.height = window.innerHeight;
       window.scrollTo(0, 0);
       return e;
     };
@@ -57,68 +103,31 @@
     };
 
     _Class.prototype.draw = function() {
-      var touch, txt, _i, _len;
+      var touch, txt, x, y, _i, _len, _ref, _ref2, _ref3;
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      for (_i = 0, _len = touches.length; _i < _len; _i++) {
-        touch = touches[_i];
-        if (touch.identifier === (typeof throttleController !== "undefined" && throttleController !== null ? throttleController.identifier : void 0)) {
+      _ref = this.touches;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        touch = _ref[_i];
+        x = touch.clientX - $(touch.target).position().left;
+        y = touch.clientY - $(touch.target).position().top;
+        if (touch.identifier === ((_ref2 = this.throttleController) != null ? _ref2.identifier : void 0)) {
           txt = 'throttle : ';
-        } else if (touch.identifier === (typeof rudderController !== "undefined" && rudderController !== null ? rudderController.identifier : void 0)) {
+        } else if (touch.identifier === ((_ref3 = this.rudderController) != null ? _ref3.identifier : void 0)) {
           txt = 'rudder : ';
         } else {
           txt = 'unknown : ';
         }
-        ctx.beginPath();
-        ctx.fillStyle = 'white';
-        ctx.fillText(txt + ' x:' + touch.clientX + ' y:' + touch.clientY, touch.clientX + 30, touch.clientY - 30);
-        ctx.beginPath();
-        ctx.strokeStyle = 'cyan';
-        ctx.lineWidth = 6;
-        ctx.arc(touch.clientX, touch.clientY, 40, 0, Math.PI * 2, true);
-        ctx.stroke();
+        this.ctx.beginPath();
+        this.ctx.fillStyle = 'white';
+        this.ctx.fillText(txt + ' x:' + x + ' y:' + y, x + 30, y - 30);
+        this.ctx.fillText(this.msg, 10, 10);
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = 'cyan';
+        this.ctx.lineWidth = 6;
+        this.ctx.arc(x, y, 40, 0, Math.PI * 2, true);
+        this.ctx.stroke();
       }
-      return ctx;
-    };
-
-    _Class.prototype.onTouchStart = function(e) {
-      var touch, touches, _i, _len, _ref;
-      touches = e.touches;
-      _ref = e.changedTouches;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        touch = _ref[_i];
-        if (!this.throttleController && touch.clientX < (canvas.width / 2)) {
-          this.throttleController = touch;
-          this.throttleController.originY = this.throttleController.clientY;
-        }
-        if (!this.rudderController && touch.clientX > (canvas.width / 2)) {
-          this.rudderController = touch;
-          this.rudderController.originX = this.rudderController.clientX;
-        }
-      }
-      return e;
-    };
-
-    _Class.prototype.onTouchEnd = function(e) {
-      var rudderController, throttleController, touch, touches, _i, _len, _ref;
-      touches = e.touches;
-      _ref = e.changedTouches;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        touch = _ref[_i];
-        if ((typeof throttleController !== "undefined" && throttleController !== null ? throttleController.identifier : void 0) === touch.identifier) {
-          throttleController = null;
-        }
-        if ((typeof rudderController !== "undefined" && rudderController !== null ? rudderController.identifier : void 0) === touch.identifier) {
-          rudderController = null;
-        }
-      }
-      return e;
-    };
-
-    _Class.prototype.onTouchMove = function(e) {
-      var touches;
-      e.preventDefault();
-      touches = e.touches;
-      return e;
+      return this.ctx;
     };
 
     /*

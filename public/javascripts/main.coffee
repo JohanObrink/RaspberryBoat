@@ -1,7 +1,9 @@
 map = new rbb.Map()
+joystick = null
 
 $(document).ready () ->
-	map.initialize document.getElementById 'map_canvas'
+	#map.initialize $('#map_canvas')
+	joystick = new rbb.Joystick $('#control')[0], now
 
 	now.ready () ->
 		console.log 'ready'
