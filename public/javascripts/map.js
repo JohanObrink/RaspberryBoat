@@ -13,8 +13,9 @@
         zoom: 18,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
-      this.map = new google.maps.Map(this.canvas, options);
-      return this.map.setCenter(new google.maps.LatLng(59.340832, 18.011712));
+      this.map = new google.maps.Map(this.canvas[0], options);
+      this.map.setCenter(new google.maps.LatLng(59.340832, 18.011712));
+      return this;
     };
 
     _Class.prototype.setPosition = function(lat, lon, precision) {
@@ -32,7 +33,7 @@
         }
         if (!!precision) {
           if (!this.circle) {
-            return this.circle = new google.maps.Circle({
+            this.circle = new google.maps.Circle({
               strokeColor: '#0000cc',
               strokeOpacity: 0.5,
               strokeWeight: 1,
@@ -44,10 +45,11 @@
             });
           } else {
             this.circle.setRadius(10 * precision);
-            return this.circle.setCenter(pos);
+            this.circle.setCenter(pos);
           }
         }
       }
+      return this;
     };
 
     _Class.prototype.drawArrow = function(lat, lon, trackTrue, speedKnots) {
@@ -62,10 +64,11 @@
           strokeOpacity: 1.0,
           strokeWeight: 1
         });
-        return this.line.setMap(this.map);
+        this.line.setMap(this.map);
       } else {
-        return this.line.setPath([start, end]);
+        this.line.setPath([start, end]);
       }
+      return this;
     };
 
     return _Class;

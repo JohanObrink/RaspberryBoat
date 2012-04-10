@@ -2,7 +2,7 @@ module 'rbb'
 
 rbb.Joystick = class
 
-	constructor: (@canvas, @now) ->
+	constructor: (@canvas) ->
 		@resetCanvas()
 
 		@ctx = @canvas.getContext '2d'
@@ -24,8 +24,13 @@ rbb.Joystick = class
 		window.onorientationchange = @resetCanvas
 		window.onresize = @resetCanvas
 
-		setInterval @draw, (1000/35)
-		setInterval @send, (1000/5)
+		@drawInterval = setInterval @draw, (1000/35)
+
+	initialize: (@now) ->
+		@sendInterval = setInterval @send, (1000/5)
+
+	stop: () ->
+		clearInterval @sendInterval
 
 	onMouseMove: (e) =>
 		@touches = [e]
@@ -66,6 +71,15 @@ rbb.Joystick = class
 		e.preventDefault()
 		@touches = e.touches
 
+		for touch in e.touches
+			if @throttleController?.identifier is touch.identifier
+				touch.originY = @throttleController.originY
+				@throttleController = touch
+
+			if @rudderController?.identifier is touch.identifier
+				touch.originX = @rudderController.originX
+				@rudderController = touch
+
 		e
 
 
@@ -78,16 +92,19 @@ rbb.Joystick = class
 	send: () =>
 		t = 0
 		r = 0
-		if !!@throttleController
-			t = @throttleController.clientY - @throttleController.originY
 
-		if !!@rudderController
-			r = @rudderController.clientX - @rudderController.originX
+		if @throttleController?
+			t = (@throttleController.clientY - @throttleController.originY) / -50
 
-		if t is not @throttle or r is not @rudder
-			@now.control.set(t, r)
+		if @rudderController?
+			r = (@rudderController.clientX - @rudderController.originX) / 50
+
+		if t != @throttle or r != @rudder
+			@now.controller.set t, r
 			@throttle = t
 			@rudder = r
+
+		null
 
 	draw: () =>
 	  

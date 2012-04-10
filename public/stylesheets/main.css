@@ -5,19 +5,19 @@
   -webkit-user-select: none;
   -webkit-tap-highlight-color: rgba(0,0,0,0.00);
 }
-#map_canvas {
+#map {
   background-color: #131;
   position: absolute;
   display: block;
-  top: 350px;
+  top: 600px;
   left: 0px;
   width: 768px;
-  height: 600px;
+  height: 424px;
 }
-canvas {
+#control {
   display: block;
   position: absolute;
-  top: 350px;
+  top: 620px;
   left: 0px;
 }
 .container {

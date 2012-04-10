@@ -9,6 +9,7 @@
       var everyone;
       everyone = nowjs.initialize(app);
       require('./now/nowGps.js').connect(everyone.now);
+      require('./now/nowRcController.js').connect(everyone.now);
     }
 
     return Now;

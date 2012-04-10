@@ -6,8 +6,10 @@ rbb.Map = class
 
 	initialize: (@canvas) ->
 		options = { zoom: 18, mapTypeId: google.maps.MapTypeId.ROADMAP }
-		@map = new google.maps.Map @canvas, options
+		@map = new google.maps.Map @canvas[0], options
 		@map.setCenter new google.maps.LatLng(59.340832, 18.011712)
+
+		this
 
 	setPosition: (lat, lon, precision) ->
 		pos = new google.maps.LatLng lat, lon
@@ -33,6 +35,8 @@ rbb.Map = class
 				else
 					@circle.setRadius(10 * precision)
 					@circle.setCenter pos
+		this
+
 
 	drawArrow: (lat, lon, trackTrue, speedKnots) ->
 		start = new google.maps.LatLng lat, lon
@@ -48,3 +52,5 @@ rbb.Map = class
 			@line.setMap @map
 		else
 			@line.setPath [start, end]
+
+		this

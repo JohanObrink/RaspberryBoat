@@ -1,12 +1,14 @@
-map = new rbb.Map()
-joystick = null
-
 $(document).ready () ->
-	#map.initialize $('#map_canvas')
-	joystick = new rbb.Joystick $('#control')[0], now
+	
+	map = new rbb.Map()
+	joystick = new rbb.Joystick $('#control')[0]
+
+	map.initialize $('#map')
 
 	now.ready () ->
 		console.log 'ready'
+
+		joystick.initialize now
 
 		###now.gps.on 'nmea', (err, data) ->
 			console.log data###

@@ -5,9 +5,8 @@
 
   rbb.Joystick = (function() {
 
-    function _Class(canvas, now) {
+    function _Class(canvas) {
       this.canvas = canvas;
-      this.now = now;
       this.draw = __bind(this.draw, this);
       this.send = __bind(this.send, this);
       this.resetCanvas = __bind(this.resetCanvas, this);
@@ -29,9 +28,17 @@
       this.canvas.addEventListener('touchend', this.onTouchEnd, false);
       window.onorientationchange = this.resetCanvas;
       window.onresize = this.resetCanvas;
-      setInterval(this.draw, 1000 / 35);
-      setInterval(this.send, 1000 / 5);
+      this.drawInterval = setInterval(this.draw, 1000 / 35);
     }
+
+    _Class.prototype.initialize = function(now) {
+      this.now = now;
+      return this.sendInterval = setInterval(this.send, 1000 / 5);
+    };
+
+    _Class.prototype.stop = function() {
+      return clearInterval(this.sendInterval);
+    };
 
     _Class.prototype.onMouseMove = function(e) {
       this.touches = [e];
@@ -75,8 +82,21 @@
     };
 
     _Class.prototype.onTouchMove = function(e) {
+      var touch, _i, _len, _ref, _ref2, _ref3;
       e.preventDefault();
       this.touches = e.touches;
+      _ref = e.touches;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        touch = _ref[_i];
+        if (((_ref2 = this.throttleController) != null ? _ref2.identifier : void 0) === touch.identifier) {
+          touch.originY = this.throttleController.originY;
+          this.throttleController = touch;
+        }
+        if (((_ref3 = this.rudderController) != null ? _ref3.identifier : void 0) === touch.identifier) {
+          touch.originX = this.rudderController.originX;
+          this.rudderController = touch;
+        }
+      }
       return e;
     };
 
@@ -89,17 +109,18 @@
       var r, t;
       t = 0;
       r = 0;
-      if (!!this.throttleController) {
-        t = this.throttleController.clientY - this.throttleController.originY;
+      if (this.throttleController != null) {
+        t = (this.throttleController.clientY - this.throttleController.originY) / -50;
       }
-      if (!!this.rudderController) {
-        r = this.rudderController.clientX - this.rudderController.originX;
+      if (this.rudderController != null) {
+        r = (this.rudderController.clientX - this.rudderController.originX) / 50;
       }
-      if (t === !this.throttle || r === !this.rudder) {
-        this.now.control.set(t, r);
+      if (t !== this.throttle || r !== this.rudder) {
+        this.now.controller.set(t, r);
         this.throttle = t;
-        return this.rudder = r;
+        this.rudder = r;
       }
+      return null;
     };
 
     _Class.prototype.draw = function() {
