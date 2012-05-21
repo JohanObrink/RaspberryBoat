@@ -7,14 +7,19 @@
     RcController.name = 'RcController';
 
     function RcController() {
-      this.usbmaestro = require('usbmaestro');
+      this.usbmaestro = require('../bin/usbmaestro');
       this.usbmaestro.connect();
+      this.set(0, 0);
     }
 
     RcController.prototype.set = function(throttle, rudder) {
       var r;
-      r = 1500 - (rudder * 250);
+	r = (rudder == 0) ? 0 : 1500 - (300 * rudder);
       this.usbmaestro.setTarget(0, r);
+
+	var t;
+	t = (throttle == 0) ? 0 : 1500 - 80 * throttle;
+	this.usbmaestro.setTarget(2, t);
       return console.log("throttle: " + throttle + ", rudder: " + rudder + ", adjusted rudder: " + r);
     };
 

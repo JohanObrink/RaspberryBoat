@@ -14,10 +14,6 @@
       this.disconnect = __bind(this.disconnect, this);
 
       this.connect = __bind(this.connect, this);
-<<<<<<< HEAD
-=======
-
->>>>>>> 29ad899a5716ceb23625da6c8ee277090993b00d
       this.tracker = require('../gps/gpsTracker.js').createTracker('./files/20120326_2322.log', true);
     }
 

@@ -118,10 +118,12 @@
       t = 0;
       r = 0;
       if (this.throttleController != null) {
-        t = (this.throttleController.clientY - this.throttleController.originY) / -50;
+        t = (this.throttleController.clientY - this.throttleController.originY) / -100;
+	t = Math.max(0, Math.min(1, t));
       }
       if (this.rudderController != null) {
         r = (this.rudderController.clientX - this.rudderController.originX) / 50;
+	r = Math.max(-1, Math.min(1, r)); 
       }
       if (t !== this.throttle || r !== this.rudder) {
         this.now.controller.set(t, r);
