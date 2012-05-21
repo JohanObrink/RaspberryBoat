@@ -11,7 +11,7 @@
     "bootstrap-stylus": "*",
     "now": "*",
     "assert": "*",
-    "vows": "*"
+    "vows": "*",
   },
   "devDependencies": {},
   "engines": {

@@ -9,11 +9,11 @@
       this.on = __bind(this.on, this);
       this.disconnect = __bind(this.disconnect, this);
       this.connect = __bind(this.connect, this);
-      this.tracker = require('../gps/testTracker.js').createTracker('./files/20120326_2322.log', true);
+      this.tracker = require('../gps/gpsTracker.js').createTracker('./files/20120326_2322.log', true);
     }
 
     NowGps.prototype.connect = function(callback) {
-      return this.tracker.connect('/dev/cu.usbserial', 4800, function(err) {
+      return this.tracker.connect('/dev/ttyUSB0', 4800, function(err) {
         if (!!err) {
           console.log(err);
         } else {
