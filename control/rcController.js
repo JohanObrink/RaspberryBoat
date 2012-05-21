@@ -14,7 +14,7 @@
 
     RcController.prototype.set = function(throttle, rudder) {
       var r;
-	r = (rudder == 0) ? 0 : 1500 - (300 * rudder);
+	r = 1500 - (300 * rudder);
       this.usbmaestro.setTarget(0, r);
 
 	var t;
