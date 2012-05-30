@@ -9,11 +9,14 @@
     "jade": "*",
     "stylus": "*",
     "bootstrap-stylus": "*",
-    "now": "*",
-    "assert": "*",
-    "vows": "*"
+    "now": "*"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "assert": "*",
+    "vows": "*",
+    "should": "*",
+    "mocha": "*"
+  },
   "engines": {
     "node": "*"
   },

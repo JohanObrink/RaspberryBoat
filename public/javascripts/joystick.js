@@ -23,6 +23,10 @@
       this.touches = [];
       this.throttle = 0;
       this.rudder = 0;
+      this.throttleRange = 50;
+      this.rudderRange = 50;
+      this.throttleMax = 1;
+      this.rudderMax = 1;
       this.canvas.addEventListener('touchstart', this.onTouchStart, false);
       this.canvas.addEventListener('touchmove', this.onTouchMove, false);
       this.canvas.addEventListener('touchend', this.onTouchEnd, false);
@@ -110,10 +114,10 @@
       t = 0;
       r = 0;
       if (this.throttleController != null) {
-        t = (this.throttleController.clientY - this.throttleController.originY) / -50;
+        t = this.normalize(this.throttleMax * (this.throttleController.clientY - this.throttleController.originY) / -this.throttleRange, this.throttleMax);
       }
       if (this.rudderController != null) {
-        r = (this.rudderController.clientX - this.rudderController.originX) / 50;
+        r = this.normalize(this.rudderMax * (this.rudderController.clientX - this.rudderController.originX) / this.rudderRange, this.rudderMax);
       }
       if (t !== this.throttle || r !== this.rudder) {
         this.now.controller.set(t, r);
@@ -121,6 +125,14 @@
         this.rudder = r;
       }
       return null;
+    };
+
+    _Class.prototype.normalize = function(val, absMax) {
+      var absVal, sign;
+      if (val === 0) return 0;
+      absVal = Math.abs(val);
+      sign = val / absVal;
+      return sign * (Math.min(absVal, absMax));
     };
 
     _Class.prototype.draw = function() {

@@ -9,12 +9,18 @@ rbb.Joystick = class
 		@ctx.strokeStyle = '#ffffff'
 		@ctx.lineWidth = 2
 
-		@throttleController = null
-		@rudderController = null
-		@touches = [] # array of touch vectors
+		@throttleController = null	# touch event for throttle
+		@rudderController = null	# touch event for rudder
+		@touches = [] 				# array of touch vectors
 
-		@throttle = 0
-		@rudder = 0
+		@throttle = 0				# throttle value
+		@rudder = 0					# rudder value
+
+		@throttleRange = 50			# distance in pixels for reaching max throttle
+		@rudderRange = 50			# distance in pixels for reaching max rudder
+
+		@throttleMax = 1			# max value for throttle
+		@rudderMax = 1				# max value for rudder
 
 		#@canvas.addEventListener 'mousemove', @onMouseMove, false
 		@canvas.addEventListener 'touchstart', @onTouchStart, false
@@ -94,10 +100,10 @@ rbb.Joystick = class
 		r = 0
 
 		if @throttleController?
-			t = (@throttleController.clientY - @throttleController.originY) / -50
+			t = @normalize((@throttleMax * (@throttleController.clientY - @throttleController.originY) / -@throttleRange), @throttleMax)
 
 		if @rudderController?
-			r = (@rudderController.clientX - @rudderController.originX) / 50
+			r = @normalize((@rudderMax * (@rudderController.clientX - @rudderController.originX) / @rudderRange), @rudderMax)
 
 		if t != @throttle or r != @rudder
 			@now.controller.set t, r
@@ -105,6 +111,14 @@ rbb.Joystick = class
 			@rudder = r
 
 		null
+
+	normalize: (val, absMax) ->
+		if val is 0
+			return 0		
+		absVal = Math.abs val
+		sign = val / absVal
+		return sign * (Math.min(absVal, absMax))
+
 
 	draw: () =>
 	  

@@ -1,63 +1,67 @@
-(function() {
-  var assert, flr, fs, vows;
+var should = require('should'),
+	fs = require('fs'),
+	flr = require('../lib/fileLineReader');
 
-  vows = require('vows');
+describe('FileLineReader', function() {
 
-  assert = require('assert');
+	before(function() {
+		var txt;
+		
+		// create text file with \r
+		txt = 'Hello\rWorld';
+		fs.writeFileSync('test_r.txt', txt);
 
-  fs = require('fs');
+		// create text file with \r
+		txt = 'Hello\nWorld';
+		fs.writeFileSync('test_n.txt', txt);
 
-  flr = require('../fileLineReader/fileLineReader.js');
+		// create text file with \r
+		txt = 'Hello\r\nWorld';
+		fs.writeFileSync('test_rn.txt', txt);
+	});
 
-  vows.describe('FileLineReader').addBatch({
-    'when reading two lines separated by \\r': {
-      topic: function() {
-        var rtxt;
-        rtxt = 'Hello\rWorld';
-        fs.writeFileSync('testr.txt', rtxt);
-        return flr.createReader('testr.txt');
-      },
-      'we get two lines': function(reader) {
-        assert.equal(reader.readLine(), 'Hello');
-        assert.equal(reader.readLine(), 'World');
-        return assert.equal(reader.eof(), true);
-      },
-      teardown: function() {
-        return fs.unlinkSync('testr.txt');
-      }
-    },
-    'when reading two lines separated by \\n': {
-      topic: function() {
-        var ntxt;
-        ntxt = 'Hello\nWorld';
-        fs.writeFileSync('testn.txt', ntxt);
-        return flr.createReader('testn.txt');
-      },
-      'we get two lines': function(reader) {
-        assert.equal(reader.readLine(), 'Hello');
-        assert.equal(reader.readLine(), 'World');
-        return assert.equal(reader.eof(), true);
-      },
-      teardown: function() {
-        return fs.unlinkSync('testn.txt');
-      }
-    },
-    'when reading two lines separated by \\r\\n': {
-      topic: function() {
-        var rntxt;
-        rntxt = 'Hello\r\nWorld';
-        fs.writeFileSync('testrn.txt', rntxt);
-        return flr.createReader('testrn.txt');
-      },
-      'we get two lines': function(reader) {
-        assert.equal(reader.readLine(), 'Hello');
-        assert.equal(reader.readLine(), 'World');
-        return assert.equal(reader.eof(), true);
-      },
-      teardown: function() {
-        return fs.unlinkSync('testrn.txt');
-      }
-    }
-  })["export"](module);
+	after(function() {
+		// remove text files
+		fs.unlinkSync('test_r.txt');
+		fs.unlinkSync('test_n.txt');
+		fs.unlinkSync('test_rn.txt');
+	});
 
-}).call(this);
+
+	describe('when reading two lines separated by \\r', function() {
+
+		it('should return two lines', function() {
+			var reader = flr.createReader('test_r.txt');
+
+			reader.readLine().should.equal('Hello');
+			reader.readLine().should.equal('World');
+			reader.eof().should.equal(true);
+		});
+
+	});
+
+	describe('when reading two lines separated by \\n', function() {
+
+		it('should return two lines', function() {
+			var reader = flr.createReader('test_n.txt');
+
+			reader.readLine().should.equal('Hello');
+			reader.readLine().should.equal('World');
+			reader.eof().should.equal(true);
+		});
+
+	});
+
+	describe('when reading two lines separated by \\r\\n', function() {
+
+		it('should return two lines', function() {
+			var reader = flr.createReader('test_rn.txt');
+
+			reader.readLine().should.equal('Hello');
+			reader.readLine().should.equal('World');
+			reader.eof().should.equal(true);
+		});
+
+	});
+
+});
