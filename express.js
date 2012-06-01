@@ -69,3 +69,7 @@ ffmpeg -t 1 -f video4linux2 -s 640x480 -i /dev/video0 -r 1 -f image2 ~/camera%05
 
 
 Telematik är teknikområde i gränssnitten mellan telekommunikation, IT och mer traditionell industri såsom bygg- eller fordonsindustri. Telematik kan exempelvis användas för överföring av mätdata och miljövariabler från mobil enhet som en bil eller ett hus till central punkt, eller för att distribuera transportordrar till fordon och samla in data (bränsleförbrukning, GPS-position, körsträcka m.m.). Inom byggbranschen används telematik som del av begreppet intelligenta hus.
+
+
+
+✓ 

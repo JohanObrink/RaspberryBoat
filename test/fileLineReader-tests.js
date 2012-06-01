@@ -31,7 +31,7 @@ describe('FileLineReader', function() {
 	describe('when reading two lines separated by \\r', function() {
 
 		it('should return two lines', function() {
-			var reader = flr.createReader('test_r.txt');
+			var reader = flr.create('test_r.txt');
 
 			reader.readLine().should.equal('Hello');
 			reader.readLine().should.equal('World');
@@ -43,7 +43,7 @@ describe('FileLineReader', function() {
 	describe('when reading two lines separated by \\n', function() {
 
 		it('should return two lines', function() {
-			var reader = flr.createReader('test_n.txt');
+			var reader = flr.create('test_n.txt');
 
 			reader.readLine().should.equal('Hello');
 			reader.readLine().should.equal('World');
@@ -55,7 +55,7 @@ describe('FileLineReader', function() {
 	describe('when reading two lines separated by \\r\\n', function() {
 
 		it('should return two lines', function() {
-			var reader = flr.createReader('test_rn.txt');
+			var reader = flr.create('test_rn.txt');
 
 			reader.readLine().should.equal('Hello');
 			reader.readLine().should.equal('World');
