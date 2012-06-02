@@ -14,6 +14,10 @@ describe('Gps', function() {
 		gps = require('../lib/gps').create();
 	});
 
+	afterEach(function() {
+		delete gps;
+	});
+
 	describe('on("data")', function() {
 		it('should fire on each line', function(done) {
 			
