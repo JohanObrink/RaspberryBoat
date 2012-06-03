@@ -15,7 +15,7 @@ describe('Gps', function() {
 	});
 
 	afterEach(function() {
-		delete gps;
+		gps.clearListeners();
 	});
 
 	describe('on("data")', function() {
