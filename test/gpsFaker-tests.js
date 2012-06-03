@@ -6,6 +6,11 @@ var should = require('should'),
 describe('gpsFaker', function() {
 
 	var file = 'nmea.txt';
+	var faker;
+
+	beforeEach(function() {
+		faker = gpsFaker.create();
+	});
 
 	before(function() {
 		fs.writeFileSync(file,
@@ -34,8 +39,6 @@ describe('gpsFaker', function() {
 	});
 
 	describe('#create', function() {
-
-		var faker = gpsFaker.create();
 
 		it('creates an object with the correct functions', function() {
 			faker.should.have.keys('reader', 'gps', 'open', 'attach', 'start', 'stop');
@@ -79,7 +82,6 @@ describe('gpsFaker', function() {
 				it('should throw an error', function() {
 					faker.open(file);
 					(function() { faker.start(); }).should.throw();
-					faker.close();
 				});
 			});
 
@@ -87,13 +89,12 @@ describe('gpsFaker', function() {
 				it('should throw an error', function() {
 					faker.attach({});
 					(function() { faker.start(); }).should.throw();
-					faker.detach();
 				});
 			});
 
 			describe('when file and gps are present', function() {
 
-				before(function() {
+				beforeEach(function() {
 					faker.attach({});
 					faker.open(file);
 				});
@@ -102,7 +103,7 @@ describe('gpsFaker', function() {
 					(function() { faker.start(); }).should.not.throw();
 				});
 
-				after(function() {
+				afterEach(function() {
 					faker.detach();
 					faker.close();
 				});

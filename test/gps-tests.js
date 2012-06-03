@@ -4,7 +4,7 @@ var should = require('should'),
 
 describe('Gps', function() {
 
-	var gps,
+	var gps = null,
 		fix = '$GPGGA,212349.903,5920.4333,N,01800.5195,E,1,04,4.4,3.2,M,23.3,M,,0000*56',
 		navinfo = '$GPRMC,212348.903,A,5920.4333,N,01800.5179,E,3.00,89.60,260312,,,A*50';
 
