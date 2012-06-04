@@ -1,3 +1,4 @@
+"use strict"
 var should = require('should'),
 	nmea = require('nmea'),
 	utils = require('../lib/utils');
@@ -18,7 +19,7 @@ describe('Gps', function() {
 		gps.clearListeners();
 	});
 
-	describe('on("data")', function() {
+	/*describe('on("data")', function() {
 		it('should fire on each line', function(done) {
 			
 			gps.on('data', function(err, data) {
@@ -28,7 +29,7 @@ describe('Gps', function() {
 
 			gps.ondata(fix);
 		});
-	});
+	});*/
 
 	describe('on("nmea")', function() {
 		it('should fire on each line and return an object', function(done) {
