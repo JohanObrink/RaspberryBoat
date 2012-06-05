@@ -5,7 +5,7 @@ var should = require('should'),
 
 describe('Gps', function() {
 
-	var gps = null,
+	var gps,
 		fix = '$GPGGA,212349.903,5920.4333,N,01800.5195,E,1,04,4.4,3.2,M,23.3,M,,0000*56',
 		navinfo = '$GPRMC,212348.903,A,5920.4333,N,01800.5179,E,3.00,89.60,260312,,,A*50';
 
@@ -15,11 +15,11 @@ describe('Gps', function() {
 		gps = require('../lib/gps').create();
 	});
 
-	afterEach(function() {
+	/*afterEach(function() {
 		gps.clearListeners();
-	});
+	});*/
 
-	/*describe('on("data")', function() {
+	describe('on("data")', function() {
 		it('should fire on each line', function(done) {
 			
 			gps.on('data', function(err, data) {
@@ -29,7 +29,7 @@ describe('Gps', function() {
 
 			gps.ondata(fix);
 		});
-	});*/
+	});
 
 	describe('on("nmea")', function() {
 		it('should fire on each line and return an object', function(done) {
