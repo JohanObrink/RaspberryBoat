@@ -28,7 +28,7 @@ describe('Gps', function() {
 				done();
 			});
 
-			gps.ondata(fix);
+			gps._ondata(fix);
 		});
 	});
 
@@ -42,7 +42,7 @@ describe('Gps', function() {
 				done();
 			});
 
-			gps.ondata(fix);
+			gps._ondata(fix);
 		});
 	});
 
@@ -55,8 +55,8 @@ describe('Gps', function() {
 				data.type.should.equal('fix');
 				done();
 			});
-			gps.ondata(fix);
-			gps.ondata(navinfo);
+			gps._ondata(fix);
+			gps._ondata(navinfo);
 
 		});
 
@@ -79,7 +79,7 @@ describe('Gps', function() {
 				done();
 			});
 
-			gps.ondata(fix);
+			gps._ondata(fix);
 		});
 	});
 
@@ -92,8 +92,8 @@ describe('Gps', function() {
 				data.type.should.equal('nav-info');
 				done();
 			});
-			gps.ondata(fix);
-			gps.ondata(navinfo);
+			gps._ondata(fix);
+			gps._ondata(navinfo);
 
 		});
 	});
