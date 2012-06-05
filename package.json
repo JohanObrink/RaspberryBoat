@@ -26,6 +26,6 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "mocha -R spec test/*.js"
+    "test": "mocha -R spec --globals parser test/*.js"
   }
 }
