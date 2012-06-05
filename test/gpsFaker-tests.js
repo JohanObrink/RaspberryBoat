@@ -1,3 +1,4 @@
+"use strict";
 var should = require('should'),
 	path = require('path'),
 	fs = require('fs'),
