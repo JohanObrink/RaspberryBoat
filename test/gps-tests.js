@@ -5,15 +5,14 @@ var should = require('should'),
 
 describe('Gps', function() {
 
-	var gps,
-		fix = '$GPGGA,212349.903,5920.4333,N,01800.5195,E,1,04,4.4,3.2,M,23.3,M,,0000*56',
+	var fix = '$GPGGA,212349.903,5920.4333,N,01800.5195,E,1,04,4.4,3.2,M,23.3,M,,0000*56',
 		navinfo = '$GPRMC,212348.903,A,5920.4333,N,01800.5179,E,3.00,89.60,260312,,,A*50';
 
 		//console.log(nmea.parse(fix));
 	
-	beforeEach(function() {
+	/*beforeEach(function() {
 		gps = require('../lib/gps').create();
-	});
+	});*/
 
 	/*afterEach(function() {
 		gps.clearListeners();
@@ -21,6 +20,8 @@ describe('Gps', function() {
 
 	describe('on("data")', function() {
 		it('should fire on each line', function(done) {
+
+			var gps = require('../lib/gps').create();
 			
 			gps.on('data', function(err, data) {
 				data.should.equal(fix);
@@ -34,6 +35,8 @@ describe('Gps', function() {
 	describe('on("nmea")', function() {
 		it('should fire on each line and return an object', function(done) {
 
+			var gps = require('../lib/gps').create();
+
 			gps.on('nmea', function(err, data) {
 				data.should.eql(nmea.parse(fix));
 				done();
@@ -45,6 +48,8 @@ describe('Gps', function() {
 
 	describe('on("fix")', function() {
 		it('should fire on each fix event', function(done) {
+
+			var gps = require('../lib/gps').create();
 
 			gps.on('fix', function(err, data) {
 				data.type.should.equal('fix');
@@ -58,6 +63,8 @@ describe('Gps', function() {
 		it('should convert lat/lon to decimal format', function(done) {
 			
 			var lat, lon;
+
+			var gps = require('../lib/gps').create();
 
 			// this should fire first
 			gps.on('nmea', function(err, data) {
@@ -79,6 +86,8 @@ describe('Gps', function() {
 	describe('on("nav-info")', function() {
 		it('should fire on each nav-info event', function(done) {
 
+			var gps = require('../lib/gps').create();
+			
 			gps.on('nav-info', function(err, data) {
 				data.type.should.equal('nav-info');
 				done();
