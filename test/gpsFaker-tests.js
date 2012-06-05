@@ -82,14 +82,14 @@ describe('gpsFaker', function() {
 			describe('when not attached to a gps', function() {
 				it('should throw an error', function() {
 					faker.open(file);
-					(function() { faker.start(); }).should.throw();
+					(function() { faker.start(); }).should["throw"]();
 				});
 			});
 
 			describe('when file is not opened', function() {
 				it('should throw an error', function() {
 					faker.attach({});
-					(function() { faker.start(); }).should.throw();
+					(function() { faker.start(); }).should["throw"]();
 				});
 			});
 
@@ -101,7 +101,7 @@ describe('gpsFaker', function() {
 				});
 
 				it('should not throw an error', function() {
-					(function() { faker.start(); }).should.not.throw();
+					(function() { faker.start(); }).should.not["throw"]();
 				});
 
 				afterEach(function() {
