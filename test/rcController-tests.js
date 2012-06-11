@@ -63,6 +63,10 @@ describe('RcController', function() {
 				it('should call reset after specified time', function(done) {
 					rc.setDeadMansGripTimeout(100);
 					rc.set(1,1);
+
+					device.values[2].should.equal(1420);
+					device.values[0].should.equal(1200);
+
 					setTimeout(function() {
 						device.values[0].should.equal(1500);
 						device.values[2].should.equal(0);
