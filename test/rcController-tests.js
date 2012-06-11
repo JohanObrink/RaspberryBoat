@@ -58,6 +58,19 @@ describe('RcController', function() {
 				rc.set(0, 1);
 				device.values[0].should.equal(1200);
 			});
+
+			describe('dead mans grip', function() {
+				it('should call reset after specified time', function(done) {
+					rc.setDeadMansGripTimeout(100);
+					rc.set(1,1);
+					setTimeout(function() {
+						device.values[0].should.equal(1500);
+						device.values[2].should.equal(0);
+
+						done();
+					}, 150);
+				})
+			});
 		});
 	});
 
