@@ -12,6 +12,7 @@
     "now": "*",
     "assert": "*",
     "vows": "*",
+    "usbmaestro": "*"
   },
   "devDependencies": {},
   "engines": {
