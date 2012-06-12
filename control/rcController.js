@@ -7,7 +7,7 @@
     RcController.name = 'RcController';
 
     function RcController() {
-      this.usbmaestro = require('../bin/usbmaestro');
+      this.usbmaestro = require('usbmaestro');
       this.usbmaestro.connect();
       this.set(0, 0);
     }
