@@ -47,6 +47,38 @@ describe('eventTrigger', function() {
 
 			trigger('foo');
 		});
+
+		it('should register single listener with arguments', function(done) {
+			target.on('foo', function() {
+				arguments.should.have.length(3);
+				arguments[0].should.equal(1);
+				arguments[1].should.equal('a');
+				arguments[2].should.equal(true);
+				done();
+			});
+			trigger('foo', 1, 'a', true);
+		});
+
+		it('should register multiple listeners with arguments', function(done) {
+			var callbacks = 0;
+			var createCallback = function(done) {
+				
+				return function() {
+					arguments.should.have.length(2);
+					arguments[0].should.equal('foo');
+					arguments[1].should.equal('bar');
+					callbacks++;
+					if(callbacks == 3)
+						done();
+				};
+			};
+
+			target.on('foo', createCallback(done));
+			target.on('foo', createCallback(done));
+			target.on('foo', createCallback(done));
+
+			trigger('foo', 'foo', 'bar');
+		});
 	});
 
 });
