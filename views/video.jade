@@ -1,5 +1,14 @@
-video(width="640", height="400", controls="controls")
-  source(src="http://localhost:8081/fwd", type="video/mp4")
+//video(width="640", height="400", controls="controls")
+	source(src="http://localhost:8081/fwd", type="video/mp4")
 
-video(width="320", height="240", controls="controls")
-  source(src="http://localhost:8081/bwd", type="video/mp4")
+//video(width="320", height="240", controls="controls")
+	source(src="http://localhost:8081/bwd", type="video/mp4")
+
+div(width="650")
+div(style="float:left;")
+	h3 Front camera
+	img(width="320", height="240", src="/videoStreamFront")
+
+div(style="float:left;padding-left:10px")
+	h3 Back camera
+	img(width="320", height="240", src="/videoStreamBack")
