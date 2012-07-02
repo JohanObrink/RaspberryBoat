@@ -12,16 +12,8 @@
 
   stylus = require('stylus');
 
-  frontCamStream = require('./video/gstreamer.js').create({
-    snapshotInterval: 500,
-    boundary: "livestreamnotlikeapplehttplivestreaming",
-    streamSourceJpg: __dirname + "/public/streams/gstreamer-front.jpg"
-  });
-  backCamStream = require('./video/gstreamer.js').create({
-    snapshotInterval: 500,
-    boundary: "livestreamnotlikeapplehttplivestreaming",
-    streamSourceJpg: __dirname + "/public/streams/gstreamer-back.jpg"
-  });
+  frontCamStream = require('./video/gstreamer.js').create();
+  backCamStream = require('./video/gstreamer.js').create();
 
   compile = function(str, path) {
     return stylus(str).set('filename', path).use(bootstrap());
