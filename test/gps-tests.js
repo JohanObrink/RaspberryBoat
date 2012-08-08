@@ -1,5 +1,5 @@
 "use strict";
-var should = require('should'),
+var expect = require('chai').expect,
 	nmea = require('nmea'),
 	utils = require('../lib/utils');
 
@@ -23,8 +23,8 @@ describe('Gps', function() {
 
 			var gps = require('../lib/gps').create();
 			
-			gps.on('data', function(err, data) {
-				data.should.equal(fix);
+			gps.on('data', function(data) {
+				expect(data).to.equal(fix);
 				done();
 			});
 
@@ -37,8 +37,8 @@ describe('Gps', function() {
 
 			var gps = require('../lib/gps').create();
 
-			gps.on('nmea', function(err, data) {
-				data.should.eql(nmea.parse(fix));
+			gps.on('nmea', function(data) {
+				expect(data).to.eql(nmea.parse(fix));
 				done();
 			});
 
@@ -51,8 +51,8 @@ describe('Gps', function() {
 
 			var gps = require('../lib/gps').create();
 
-			gps.on('fix', function(err, data) {
-				data.type.should.equal('fix');
+			gps.on('fix', function(data) {
+				expect(data.type).to.equal('fix');
 				done();
 			});
 			gps._ondata(fix);
@@ -67,15 +67,15 @@ describe('Gps', function() {
 			var gps = require('../lib/gps').create();
 
 			// this should fire first
-			gps.on('nmea', function(err, data) {
+			gps.on('nmea', function(data) {
 				lat = utils.convertNmeaToDecimal(data.lat);
 				lon = utils.convertNmeaToDecimal(data.lon);
 			});
 
 			//so this assertion should work
-			gps.on('fix', function(err, data) {
-				data.lat.should.equal(lat);
-				data.lon.should.equal(lon);
+			gps.on('fix', function(data) {
+				expect(data.lat).to.equal(lat);
+				expect(data.lon).to.equal(lon);
 				done();
 			});
 
@@ -88,8 +88,8 @@ describe('Gps', function() {
 
 			var gps = require('../lib/gps').create();
 			
-			gps.on('nav-info', function(err, data) {
-				data.type.should.equal('nav-info');
+			gps.on('nav-info', function(data) {
+				expect(data.type).to.equal('nav-info');
 				done();
 			});
 			gps._ondata(fix);

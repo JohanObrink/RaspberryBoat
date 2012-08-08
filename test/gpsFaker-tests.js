@@ -1,5 +1,5 @@
 "use strict";
-var should = require('should'),
+var expect = require('chai').expect,
 	path = require('path'),
 	fs = require('fs'),
 	gpsFaker = require('../lib/gpsFaker.js');
@@ -44,7 +44,7 @@ describe('gpsFaker', function() {
 	describe('#create', function() {
 
 		it('creates an object with the correct functions', function() {
-			faker.should.have.keys('_secondLength', 'reader', 'gps', 'open', 'attach', 'start', 'stop');
+			expect(faker).to.have.keys('_secondLength', 'reader', 'gps', 'open', 'attach', 'start', 'stop');
 		});
 
 		describe('#attach', function() {
@@ -53,12 +53,12 @@ describe('gpsFaker', function() {
 
 			it('stores a reference to the gps', function() {
 				faker.attach(gps);
-				faker.gps.should.equal(gps);
+				expect(faker.gps).to.equal(gps);
 			});
 			
 			it('overwrites the gps\' connect method', function() {			
 				faker.attach(gps);
-				gps.should.have.keys('connect');
+				expect(gps).to.have.keys('connect');
 			});
 
 			afterEach(function() {
@@ -71,8 +71,8 @@ describe('gpsFaker', function() {
 
 			it('should contain a fileLineReader pointing to the provided file', function() {
 				faker.open(file);
-				faker.should.have.property('reader');
-				faker.reader.path.should.equal(file);
+				expect(faker).to.have.property('reader');
+				expect(faker.reader.path).to.equal(file);
 			});
 
 			afterEach(function() {
@@ -84,14 +84,14 @@ describe('gpsFaker', function() {
 			describe('when not attached to a gps', function() {
 				it('should throw an error', function() {
 					faker.open(file);
-					(function() { faker.start(); }).should["throw"]();
+					expect(function() { faker.start(); }).to.throwError;
 				});
 			});
 
 			describe('when file is not opened', function() {
 				it('should throw an error', function() {
 					faker.attach({});
-					(function() { faker.start(); }).should["throw"]();
+					expect(function() { faker.start(); }).to.throwError;
 				});
 			});
 
@@ -105,7 +105,7 @@ describe('gpsFaker', function() {
 						_ondata: function(line) {
 
 							//Make sure the correct data was recieved
-							line.should.equal(dataRows[this.data.length]);
+							expect(line).to.equal(dataRows[this.data.length]);
 							
 							//Save the data
 							this.data.push(line);
@@ -124,7 +124,7 @@ describe('gpsFaker', function() {
 					faker.attach({});
 					faker.open(file);
 
-					(function() { faker.start(); }).should.not["throw"]();
+					expect(function() { faker.start(); }).to.not.throwError;
 					done();
 				});
 

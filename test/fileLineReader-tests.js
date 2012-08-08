@@ -1,4 +1,4 @@
-var should = require('should'),
+var expect = require('chai').expect,
 	fs = require('fs'),
 	flr = require('../lib/fileLineReader');
 
@@ -33,9 +33,9 @@ describe('FileLineReader', function() {
 		it('should return two lines', function() {
 			var reader = flr.create('test_r.txt');
 
-			reader.readLine().should.equal('Hello');
-			reader.readLine().should.equal('World');
-			reader.eof().should.equal(true);
+			expect(reader.readLine()).to.equal('Hello');
+			expect(reader.readLine()).to.equal('World');
+			expect(reader.eof()).to.be.true;
 		});
 
 	});
@@ -45,9 +45,9 @@ describe('FileLineReader', function() {
 		it('should return two lines', function() {
 			var reader = flr.create('test_n.txt');
 
-			reader.readLine().should.equal('Hello');
-			reader.readLine().should.equal('World');
-			reader.eof().should.equal(true);
+			expect(reader.readLine()).to.equal('Hello');
+			expect(reader.readLine()).to.equal('World');
+			expect(reader.eof()).to.be.true;
 		});
 
 	});
@@ -57,9 +57,9 @@ describe('FileLineReader', function() {
 		it('should return two lines', function() {
 			var reader = flr.create('test_rn.txt');
 
-			reader.readLine().should.equal('Hello');
-			reader.readLine().should.equal('World');
-			reader.eof().should.equal(true);
+			expect(reader.readLine()).to.equal('Hello');
+			expect(reader.readLine()).to.equal('World');
+			expect(reader.eof()).to.be.true;
 		});
 
 	});
