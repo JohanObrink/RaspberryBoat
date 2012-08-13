@@ -32,7 +32,8 @@ rbb.Joystick = class
 
 		@drawInterval = setInterval @draw, (1000/35)
 
-	initialize: (@now) ->
+	initialize: (@socket) ->
+		@sendCounter = 0
 		@sendInterval = setInterval @send, (1000/5)
 
 	stop: () ->
@@ -98,6 +99,7 @@ rbb.Joystick = class
 	send: () =>
 		t = 0
 		r = 0
+		@sendCounter++
 
 		if @throttleController?
 			t = @normalize((@throttleMax * (@throttleController.clientY - @throttleController.originY) / -@throttleRange), @throttleMax)
@@ -105,10 +107,11 @@ rbb.Joystick = class
 		if @rudderController?
 			r = @normalize((@rudderMax * (@rudderController.clientX - @rudderController.originX) / @rudderRange), @rudderMax)
 
-		if t != @throttle or r != @rudder
-			@now.controller.set t, r
+		if t != @throttle or r != @rudder || @sendCounter > 5
+			@socket.emit('controller.set', { throttle: t, rudder: r});
 			@throttle = t
 			@rudder = r
+			@sendCounter = 0
 
 		null
 

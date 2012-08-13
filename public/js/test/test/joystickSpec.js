@@ -1,20 +1,20 @@
 describe("Joystick", function() {
   var joystick;
   var canvas;
-  var now;
+  var socket;
 
   beforeEach(function() {
     canvas = new FakeCanvas(768, 400);
-    now = {
+    socket = {
+      message: null,
       throttle: 0,
       rudder: 0,
       isSet: false,
-      controller: {
-        set: function(t, r) {
-          now.throttle = t;
-          now.rudder = r;
-          now.isSet = true;
-        }
+      emit: function(msg, data) {
+        socket.message = msg;
+        socket.throttle = data.throttle;
+        socket.rudder = data.rudder;
+        socket.isSet = true;
       }
     };
     joystick = new rbb.Joystick(canvas);
@@ -29,7 +29,7 @@ describe("Joystick", function() {
   describe("when a new touch is registered", function() {
     beforeEach(function() {
       joystick.stop();
-      joystick.initialize(now);
+      joystick.initialize(socket);
     });
 
     afterEach(function() {
@@ -99,10 +99,10 @@ describe("Joystick", function() {
         });
 
         it("should send a throttle value of 1", function() {
-          waitsFor(function() { return now.isSet }, "now was never called", 500);
+          waitsFor(function() { return socket.isSet }, "socket was never called", 500);
           runs(function() {
-            expect(now.throttle).toBe(1);
-            expect(now.rudder).toBe(0);
+            expect(socket.throttle).toBe(1);
+            expect(socket.rudder).toBe(0);
           });
         });
         
@@ -118,10 +118,11 @@ describe("Joystick", function() {
         });
 
         it("should send a throttle value of -1", function() {
-          waitsFor(function() { return now.isSet }, "now was never called", 500);
+          waitsFor(function() { return socket.isSet }, "socket was never called", 500);
           runs(function() {
-            expect(now.throttle).toBe(-1);
-            expect(now.rudder).toBe(0);
+            expect(socket.message).toBe('controller.set');
+            expect(socket.throttle).toBe(-1);
+            expect(socket.rudder).toBe(0);
           });
         });
         
@@ -192,10 +193,10 @@ describe("Joystick", function() {
         });
 
         it("should send a rudder value of -1", function() {
-          waitsFor(function() { return now.isSet }, "now was never called", 500);
+          waitsFor(function() { return socket.isSet }, "socket was never called", 500);
           runs(function() {
-            expect(now.throttle).toBe(0);
-            expect(now.rudder).toBe(-1);
+            expect(socket.throttle).toBe(0);
+            expect(socket.rudder).toBe(-1);
           });
         });
         
@@ -211,10 +212,10 @@ describe("Joystick", function() {
         });
 
         it("should send a rudder value of 1", function() {
-          waitsFor(function() { return now.isSet }, "now was never called", 500);
+          waitsFor(function() { return socket.isSet }, "socket was never called", 500);
           runs(function() {
-            expect(now.throttle).toBe(0);
-            expect(now.rudder).toBe(1);
+            expect(socket.throttle).toBe(0);
+            expect(socket.rudder).toBe(1);
           });
         });
         

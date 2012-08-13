@@ -5,22 +5,22 @@ $(document).ready () ->
 
 	map.initialize $('#map')
 
-	now.ready () ->
-		console.log 'ready'
+	socket = window.socket = io.connect location.href
 
-		joystick.initialize now
+	socket.on 'connect', () ->
+		console.log 'socket.io connected'
 
-		###now.gps.on 'nmea', (err, data) ->
-			console.log data###
-
-		now.gps.on 'nav-info', (err, data) ->
+	socket.on 'gps.data', (data) ->
+		if data.type is 'nav-info'
 			map.drawArrow data.lat, data.lon, data.trackTrue, data.speedKnots
-
-		now.gps.on 'fix', (err, data) ->
+		if data.type is 'fix'
 			map.setPosition data.lat, data.lon, data.horDilution
+			
+
+	joystick.initialize socket
 
 	$('.gps-connect').click () ->
-		now.gps.connect (err) ->
+		socket.emit 'gps.connect', (err) ->
 			if err?
 				alert err
 			else

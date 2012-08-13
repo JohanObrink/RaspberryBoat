@@ -7,9 +7,7 @@
     "nmea": "*",
     "express": "2.5.11",
     "jade": "*",
-    "stylus": "*",
-    "bootstrap-stylus": "*",
-    "now": "*",
+    "less-middleware": "*",
     "underscore": "1.3.3",
     "socket.io": "0.9.6"
   },
@@ -26,7 +24,7 @@
     "url": "git://github.com/JohanObrink/RaspberryBoat.git"
   },
   "scripts": {
-    "start": "node app.js",
+    "start": "node web.js",
     "test": "mocha -R spec --globals parser test/*.js"
   }
 }
