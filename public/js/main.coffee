@@ -10,7 +10,7 @@ $(document).ready () ->
 	socket.on 'connect', () ->
 		console.log 'socket.io connected'
 
-	socket.on 'gps.data', (data) ->
+	socket.on 'gps', (data) ->
 		if data.type is 'nav-info'
 			map.drawArrow data.lat, data.lon, data.trackTrue, data.speedKnots
 		if data.type is 'fix'

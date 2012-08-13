@@ -10,7 +10,7 @@
     socket.on('connect', function() {
       return console.log('socket.io connected');
     });
-    socket.on('gps.data', function(data) {
+    socket.on('gps', function(data) {
       if (data.type === 'nav-info') {
         map.drawArrow(data.lat, data.lon, data.trackTrue, data.speedKnots);
       }

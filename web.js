@@ -43,10 +43,18 @@ app.get('/', routes.index);
 app.listen(port, function(){
 
   // Hook up everything
+  var io = require('socket.io').listen(app);
+  io.set('log level', 1);
+  
+  var gps = require('./lib/gps').create();
+  var controller = require('./lib/rcController').create();
+
+  var faker = require('./lib/gpsFaker').create().attach(gps).open('./files/gps-test.log').start();
+
   require('./lib/connectNow').connect(
-    require('socket.io').listen(app),
-    require('./lib/gps').create(),
-    require('./lib/rcController').create());
+    io,
+    gps,
+    controller);
   
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
