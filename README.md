@@ -8,16 +8,16 @@ Raspbian (Debian Wheezy)
 
 ###GPS drivers
 
-  apt-get install gpsd
-  apt-get install gpsd-client
+    apt-get install gpsd
+    apt-get install gpsd-client
 
 ###Modem dialler
 
-  apt-get install ppp
+    apt-get install ppp
 
 ###libusb
 
-  apt-get install libusb-dev
+    apt-get install libusb-dev
 
 
 ##Parts
