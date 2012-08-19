@@ -1,6 +1,25 @@
 #Raspberry boat
 [![Build Status](https://secure.travis-ci.org/JohanObrink/RaspberryBoat.png?branch=master)](http://travis-ci.org/JohanObrink/RaspberryBoat)
 
+#Platform
+Raspbian (Debian Wheezy)
+
+##Required installs
+
+###GPS drivers
+
+  apt-get install gpsd
+  apt-get install gpsd-client
+
+###Modem dialler
+
+  apt-get install ppp
+
+###libusb
+
+  apt-get install libusb-dev
+
+
 ##Parts
 
 1. RC Boat - KJ
