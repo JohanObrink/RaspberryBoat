@@ -49,7 +49,7 @@ app.listen(port, function(){
   var gps = require('./lib/gps').create();
   var controller = require('./lib/rcController').create();
 
-  var faker = require('./lib/gpsFaker').create().attach(gps).open('./files/gps-test.log').start();
+//  var faker = require('./lib/gpsFaker').create().attach(gps).open('./files/gps-test.log').start();
 
   require('./lib/connectNow').connect(
     io,
