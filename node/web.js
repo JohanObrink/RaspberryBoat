@@ -39,6 +39,7 @@ app.configure('production', function(){
 
 // Routes
 app.get('/', routes.index);
+app.get('/video/front', routes.video.front);
 
 app.listen(port, function(){
 
