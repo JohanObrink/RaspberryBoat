@@ -14,7 +14,9 @@
   },
   "devDependencies": {
     "chai": "*",
-    "mocha": "*"
+    "mocha": "*",
+    "should": "1.1.0",
+    "bufferjs": "1.1.0"
   },
   "engines": {
     "node": "*"
