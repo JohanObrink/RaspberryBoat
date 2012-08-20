@@ -8,30 +8,24 @@ Raspbian (Debian Wheezy)
 
 ###GPS drivers
 
-  apt-get install gpsd
-  apt-get install gpsd-client
+    apt-get install gpsd
+    apt-get install gpsd-client
 
 ###Modem dialler
 
-  apt-get install ppp
+    apt-get install ppp
 
 ###libusb
 
-  apt-get install libusb-dev
+    apt-get install libusb-dev
 
 
 ##Parts
 
-1. RC Boat - KJ
-2. Electricity - KJ
-3. USB Hub - http://www.prisjakt.nu/produkt.php?p=841889
-4. Front facing web cam
-5. Back facing web cam
-6. GPS - JÖ, http://www.webhallen.com/hemelektronik/40084-globalsat_gps-mottagare_bu-353_med_usb-anslutning
-7. 4G Dongle
-8. Servo controller - KJ
-9. Raspberry Pi
-10. Flood lights
-
-Video streaming - handled through the OS?
-http://delog.wordpress.com/2011/04/14/stream-webm-video-over-rtp-with-gstreamer/
+1. [Raspberry Pi](http://www.raspberrypi.org/)
+2. Boat [Kyosho Sunstorm 600 v2](http://www.kyosho.com/eng/products/rc/detail.html?product_id=107423)
+3. GPS Reciever [USGlobalSat BU-353](http://www.usglobalsat.com/p-62-bu-353-w.aspx)
+4. Camera [Creative Live! Cam Socialize HD](http://www.creative.com/mylivecam/products/product.aspx?catID=1&pid=19008)
+5. Servo controller [Pololu Micro Maestro 6-Channel USB Servo Controller](http://www.pololu.com/catalog/product/1350)
+6. Powered USB Hub [Deltaco UH-1302](https://www.deltaco.se/products/items/itemid/\(UH-1302\)/index.aspx)
+7. 3G Modem [Huawei E1820](https://www.google.com/search?q=huawei+e1820)
