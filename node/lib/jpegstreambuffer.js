@@ -57,6 +57,11 @@
 
 		if ( jpegStart != -1 && jpegEnd == -1 ) {
 			// new jpeg data with no end marker
+
+			// we're already on a image, throw it away and start a new one
+			if ( this._currentStreamPointer != -1 ) {
+				this.resetCurrentData();
+			}
 			this.readJpegData(data, jpegStart, data.length);
 		}
 		else if ( jpegStart == -1 && jpegEnd != -1 ) {
@@ -75,12 +80,25 @@
 
 			// see if the end is before the start
 			if ( jpegEnd < jpegStart ) {
-				this.readJpegData(data, 0, jpegEnd+2);
-				this.closeJpegData();
-
+				
+				// We only want this if we already had a current image
+				if ( this._currentStreamPointer != -1 ) {
+					this.readJpegData(data, 0, jpegEnd+2);
+					this.closeJpegData();
+				}
+				else {
+					this.resetCurrentData();
+				}
+				
+				// Start reading the next image
 				this.readJpegData(data, jpegStart, data.length);
 			}
 			else {
+				// we're already on a image, throw it away and start a new one
+				if ( this._currentStreamPointer != -1 ) {
+					this.resetCurrentData();
+				}
+				
 				this.readJpegData(data, jpegStart, jpegEnd+2);
 				this.closeJpegData();
 			}
@@ -96,20 +114,23 @@
 
 	JpegStreamBuffer.prototype.closeJpegData = function(){
 		this.sendJpegData(this._currentJpegData, this._currentStreamPointer);
-		this._currentStreamPointer = -1;
-		this._currentJpegData = null;
+		this.resetCurrentData();
 	} 
 
 	JpegStreamBuffer.prototype.readJpegData = function(data, start, end) {
-		
 		if ( this._currentJpegData == null ) {
 			this._currentJpegData = new Buffer( 500000 ); // Allocate space for a new Jpeg data
 			this._currentStreamPointer = 0;
 		}
-		
+				
 		data.copy( this._currentJpegData, this._currentStreamPointer, start, end );
 		this._currentStreamPointer += end - start;
 	};
+
+	JpegStreamBuffer.prototype.resetCurrentData = function () {
+		this._currentStreamPointer = -1;
+		this._currentJpegData = null;
+	}
 
 	JpegStreamBuffer.prototype.findJpegStartMarker = function(buffer, fromOffset) {
 		var i =  fromOffset > 0 ? fromOffset*2 : 0; // times 2 since we want to read 2 bytes
@@ -118,10 +139,11 @@
 		{
 			var soi = buffer.readUInt16BE(i);
 			if ( soi == 0xFFD8  )
-			{ 
+			{
 				var jfif = buffer.readUInt16BE(i+2);
-				if ( jfif == 0xFFEE )
+				if ( jfif == 0xFFEE || jfif == 0xFFFE ) {
 					return i;
+				}
 			}
 		}
 
