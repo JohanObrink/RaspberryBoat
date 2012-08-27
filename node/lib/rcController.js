@@ -26,6 +26,8 @@ RcController.prototype = {
 		var r = 1500 - (300 * rudder);
 		var t = (throttle == 0) ? 0 : 1500 - 80 * throttle;
 
+//		console.log('throttle: ' + throttle + ', rudder: ' + rudder);
+
 		this.device.setTarget(0, r);
 		this.device.setTarget(2, t);
 

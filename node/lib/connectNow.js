@@ -4,7 +4,7 @@
 
 		// hook up gps
 		var gps_connect = function() {
-			gps.connect('/dev/cu.usbserial', 4800, function(err) {
+/*			gps.connect('/dev/gps0', 4800, function(err) {
 
 				if(err) {
 					console.log('GPS Error: ' + err);
@@ -13,10 +13,10 @@
 				}
 
 			});
-		};
+*/		};
 
 		io.sockets.on('connection', function(socket) {
-			gps.on('fix', function(data) {
+/*			gps.on('fix', function(data) {
 				socket.emit('gps', data);
 			});
 
@@ -35,11 +35,11 @@
 			socket.on('foo', function(bar) {
 				console.log('foo' + bar);
 			});
-		});
+*/		});
 
 		// auto connect the gps
-		gps_connect();
-		controller.connect();
+//		gps_connect();
+//		controller.connect();
 
 
 	};

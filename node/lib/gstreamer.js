@@ -8,9 +8,9 @@
 	var GStreamer = exports.GStreamer = function( settings ) {
 		this.responsePool = [];
 		this.settings = {
-			framerate: 10,
+			framerate: 3,
 			width: 640,
-			height: 480,
+			height: 360,
 			boundary: "livestreamnotlikeapplehttplivestreaming",
 			source: "videotestsrc"
 		};
@@ -21,6 +21,7 @@
 				if ( settings[s] && this.settings[s] ) this.settings[s] = settings[s];
 			}
 		}
+		this.imgIndex = 0;
 
 		_.bindAll(this);
 	}
@@ -60,33 +61,48 @@
 	}
 
 	GStreamer.prototype.onJpegData = function (data) {
-
+/*		
+		this.imgIndex++;
+		var fs = require('fs');
+		var name = 'img' + this.imgIndex + '.jpg';
+		var path = require('path').join(__dirname, '../public/img/' + name);
+		fs.writeFile(path, data, function() {
+			console.log('wrote ' + path);
+		});
+*/
+		
 		for ( var i = 0; i < this.responsePool.length; ++i ) {
 			this.responsePool[i].write('Content-Type: image/jpeg\n Content-Length: '+data.length+'\n\n');
 			this.responsePool[i].write(data);
 			this.responsePool[i].write('\n--'+this.settings.boundary+'\n');
 		}
+		
 
 	}
 
 	GStreamer.prototype.createChildProcess = function() {
 		var args = [
-			this.settings.source, 
-			'!', 'video/x-raw-rgb, width='+this.settings.width+', height='+this.settings.height,
-			'!', 'timeoverlay',
-			'!', 'jpegenc',
-			//'!', 'filesink', 'location=/dev/stdout'
-			'!', 'fdsink fd=1'
+			'-an',
+			'-f', 'video4linux2',
+			'-vcodec', 'mjpeg',
+			'-s', this.settings.width + 'x' + this.settings.height,
+			'-r', this.settings.framerate,
+			'-i', this.settings.source,
+			'-f', 'image2pipe',
+			'-'
 		]
-		this.childProcess = child.spawn("gst-launch", args, null /*options*/);
+		this.childProcess = child.spawn("ffmpeg", args, null /*options*/);
 		this.childProcess.stderr.on('data', this.onChildProcessError);
 		this.childProcess.on('exit', this.onChildProcessExit);
-
 		return this.childProcess;
 	}
 
+	GStreamer.prototype.tmpStdout = function(data) {
+		console.log("stdout");
+	}
+
 	GStreamer.prototype.onChildProcessError = function(data) {
-		console.log("Error: " + data.toString());
+//		console.log("Stderr: " + data.toString());
 	}
 
 	GStreamer.prototype.onChildProcessExit = function(code) {

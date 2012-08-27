@@ -45,13 +45,14 @@
 		var buffer = new Buffer(sizedBuffer.length);
 		sizedBuffer.copy(buffer);
 
+
 		this.emit('data', buffer);
 	};
 
 	JpegStreamBuffer.prototype.onStreamData = function(data) {
 		var jpegStart, jpegEnd, safety;
 		safety = 0;
-		
+
 		jpegStart = this.findJpegStartMarker(data, 0);
 		jpegEnd = this.findJpegEndMarker(data, 0);
 
@@ -157,8 +158,9 @@
 		{
 			var soi = buffer.readUInt16BE(i);
 			
-			if ( soi == 0xFFD9 )
+			if ( soi == 0xFFD9 ) {
 				return i;
+			}
 		}
 
 		return -1;
