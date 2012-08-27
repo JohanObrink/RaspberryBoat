@@ -102,7 +102,7 @@
 	}
 
 	GStreamer.prototype.onChildProcessError = function(data) {
-//		console.log("Stderr: " + data.toString());
+		console.log("Stderr: " + data.toString());
 	}
 
 	GStreamer.prototype.onChildProcessExit = function(code) {

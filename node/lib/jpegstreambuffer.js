@@ -46,7 +46,7 @@
 		sizedBuffer.copy(buffer);
 
 
-		this.emit('data', buffer);
+		this.emit('data', sizedBuffer);
 	};
 
 	JpegStreamBuffer.prototype.onStreamData = function(data) {

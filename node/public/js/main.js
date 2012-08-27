@@ -19,7 +19,7 @@
       }
     });
     joystick.initialize(socket);
-    $('.gps-connect').click(function() {
+    $('.cam-front').click(function() {
       return socket.emit('gps.connect', function(err) {
         if (err != null) {
           return alert(err);

@@ -48,7 +48,7 @@ Gps.prototype = {
 
 	// Called when data is read from the GPS
 	_ondata: function(line) {
-
+		return;
 		// Dispatch raw as data event
 		this.dispatch('data', line);
 
