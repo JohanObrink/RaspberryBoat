@@ -1,0 +1,56 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+USB_MODEM='/dev/ttyUSB1'
+PPP_INTERFACE='ppp0'
+PHY_PPP=$(ifconfig | grep $PPP_INTERFACE | awk '{print $1}')
+
+# Check for USB modem
+#if [ $USB_MODEM  
+
+if [ "$PHY_PPP" != "$PPP_INTERFACE" ]; then
+	echo "Executing wvdial in the background.."
+	wvdial 2>/var/log/wvdial_log.txt &
+	echo "You can examine Wvdial output at /var/log/wvdial_log.txt"
+
+	# wait until the PPP device created
+	echo "Waiting for $PPP_INTERFACE to be created.."
+	while [ "$PHY_PPP" != "$PPP_INTERFACE" ]
+	do
+		PHY_PPP=$(ifconfig | grep '^ppp[0-9]' | awk '{print $1}')
+
+		# check whether the background wvdial process is still alive
+		WVDIAL_PS=$(ps -C wvdial | awk '{print $4}' | grep 'wvdial')
+		if [ "$WVDIAL_PS" != "wvdial"  ]; then
+			echo "Wvdial terminated abruptly. Aborting.."
+			exit 69
+		fi
+	done
+	echo "ppp0 should be up now... should..."
+
+	# Post IP to console
+	_IP=$(hostname -I) || true
+	if [ "$_IP" ]; then
+  		printf "My IP address is %s\n" "$_IP"
+	fi
+
+
+	echo "Pinging dronederp"
+	wget -b --spider http://droneping.herokuapp.com/ping
+	echo "Launching RaspberryBoat"
+	/usr/local/bin/forever -l /var/log/nodelog.txt -e /var/log/nodeerror.txt -o /var/log/nodeout.txt -v -d start /home/pi/src/RaspberryBoat/node/web.js
+
+	# Ping random stuff here
+
+fi
+
+exit 0
