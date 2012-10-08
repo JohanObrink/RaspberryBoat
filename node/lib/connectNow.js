@@ -4,7 +4,7 @@
 
 		// hook up gps
 		var gps_connect = function() {
-			gps.connect('/dev/gps0', 4800, function(err) {
+			gps.connect('/dev/ttyUSB0', 4800, function(err) {
 
 				if(err) {
 					console.log('GPS Error: ' + err);

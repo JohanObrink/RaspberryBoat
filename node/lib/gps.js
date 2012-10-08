@@ -22,6 +22,7 @@ Gps.prototype = {
 	connect: function(path, baud, callback) {
 		
 		if(this.connected) {
+			console.log('Allready connected');
 			callback('Allready connected');
 			return;
 		}
@@ -32,6 +33,9 @@ Gps.prototype = {
 
 			callback();
 			this.port.on('data', _.bind(this._ondata, this));
+			this.port.on('error', function(err) {
+				console.log('GPS Error: ' + err);
+			});
 
 		} catch(err) {
 			callback(err);
@@ -48,11 +52,11 @@ Gps.prototype = {
 
 	// Called when data is read from the GPS
 	_ondata: function(line) {
-		return;
 		// Dispatch raw as data event
 		this.dispatch('data', line);
 
 		var obj = nmea.parse(line);
+
 		if(!obj)
 			return;
 

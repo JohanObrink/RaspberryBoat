@@ -40,6 +40,7 @@ app.configure('production', function(){
 // Routes
 app.get('/', routes.index);
 app.get('/video/front', routes.video.front);
+app.get('/video/back', routes.video.back);
 
 app.listen(port, function(){
 

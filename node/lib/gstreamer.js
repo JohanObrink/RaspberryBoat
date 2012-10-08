@@ -6,12 +6,13 @@
 		_				= require('underscore');
 
 	var GStreamer = exports.GStreamer = function( settings ) {
+		this.jpegStreamer = require('./jpegstreambuffer').create();
 		this.responsePool = [];
 		this.settings = {
 			framerate: 3,
 			width: 640,
 			height: 360,
-			boundary: "livestreamnotlikeapplehttplivestreaming",
+			boundary: "v4l2jpegboundry",
 			source: "videotestsrc"
 		};
 		this.childProcess = null;
@@ -44,6 +45,8 @@
 
 		// Start the stream if we don't already have one
 		this.startStream();
+
+		this.childProcess.stdout.pipe( res, { end: false } );
 	}
 
 	GStreamer.prototype.removeRequest = function( res ) {
@@ -56,8 +59,8 @@
 
 		this.createChildProcess();
 
-		jpegStreamer.on('data', this.onJpegData);
-		jpegStreamer.setInput( this.childProcess.stdout ).start();
+//		this.jpegStreamer.on('data', this.onJpegData);
+//		this.jpegStreamer.setInput( this.childProcess.stdout ).start();
 	}
 
 	GStreamer.prototype.onJpegData = function (data) {
@@ -82,27 +85,35 @@
 
 	GStreamer.prototype.createChildProcess = function() {
 		var args = [
-			'-an',
-			'-f', 'video4linux2',
-			'-vcodec', 'mjpeg',
-			'-s', this.settings.width + 'x' + this.settings.height,
-			'-r', this.settings.framerate,
-			'-i', this.settings.source,
-			'-f', 'image2pipe',
-			'-'
+			'-d', this.settings.source,
+			'-j', '--stdout', 
+			'-f', '5'
 		]
-		this.childProcess = child.spawn("ffmpeg", args, null /*options*/);
+		this.childProcess = child.spawn("/usr/local/bin/v4l2jpeg", args, null /*options*/);
 		this.childProcess.stderr.on('data', this.onChildProcessError);
 		this.childProcess.on('exit', this.onChildProcessExit);
+		//this.childProcess.stdout.on('data', this.tmpStdout);
 		return this.childProcess;
 	}
 
 	GStreamer.prototype.tmpStdout = function(data) {
 		console.log("stdout");
+
+		this.imgIndex++;
+		var fs = require('fs');
+		var name = 'img' + this.imgIndex + '.jpg';
+		var path = require('path').join(__dirname, '../public/img/' + name);
+		fs.writeFile(path, data, function() {
+			console.log('wrote ' + path);
+		});
 	}
 
 	GStreamer.prototype.onChildProcessError = function(data) {
-		console.log("Stderr: " + data.toString());
+		var msg = data.toString();
+		if(!this.noMore && msg.indexOf('process_image') == -1) {
+			console.log("Stderr: " + data.toString());
+			this.noMore = true;
+		}
 	}
 
 	GStreamer.prototype.onChildProcessExit = function(code) {
