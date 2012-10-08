@@ -51,5 +51,5 @@ Raspbian (Debian Wheezy)
 7. 3G Modem [Huawei E1820](https://www.google.com/search?q=huawei+e1820)
 
 ##Debugging
-If anything goes wrong - in any way imaginable - excpet for when the boat is on fire - the problem is ALLWAYS that the
+If anything goes wrong - in any way imaginable - except for when the boat is on fire - the problem is ALLWAYS that the
 amps are to low. If the boat IS on fire, the amps are to high and in the wrong place; decrease and rewire.
