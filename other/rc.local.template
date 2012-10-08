@@ -10,17 +10,34 @@
 # bits.
 #
 # By default this script does nothing.
+python /home/pi/src/gpio/ctrl.py &
+
 USB_MODEM='/dev/ttyUSB1'
 PPP_INTERFACE='ppp0'
 PHY_PPP=$(ifconfig | grep $PPP_INTERFACE | awk '{print $1}')
 
 # Check for USB modem
-#if [ $USB_MODEM  
+/home/pi/src/gpio/led.sh 1 blink
+if [ ! -e $USB_MODEM ]; then
+	echo "No modem found, using magic and trying again..."
+	lsusb
+	usb_modeswitch -v 12d1 -p 1446 -V 12d1  -P 14ac
+	sleep 5
+fi
+
+if [ -e $USB_MODEM ]; then
+	echo "Modem exists, hoping for the best"
+	/home/pi/src/gpio/led.sh 1 on
+else
+	echo "No modem found, exiting..."
+	exit 0
+fi
 
 if [ "$PHY_PPP" != "$PPP_INTERFACE" ]; then
+	/home/pi/src/gpio/led.sh 2 blink
 	echo "Executing wvdial in the background.."
 	wvdial 2>/var/log/wvdial_log.txt &
-	echo "You can examine Wvdial output at /var/log/wvdial_log.txt"
+	echo "You can examine wvdial output at /var/log/wvdial_log.txt"
 
 	# wait until the PPP device created
 	echo "Waiting for $PPP_INTERFACE to be created.."
@@ -43,13 +60,14 @@ if [ "$PHY_PPP" != "$PPP_INTERFACE" ]; then
   		printf "My IP address is %s\n" "$_IP"
 	fi
 
-
 	echo "Pinging dronederp"
-	wget -b --spider http://droneping.herokuapp.com/ping
-	echo "Launching RaspberryBoat"
-	/usr/local/bin/forever -l /var/log/nodelog.txt -e /var/log/nodeerror.txt -o /var/log/nodeout.txt -v -d start /home/pi/src/RaspberryBoat/node/web.js
+	wget -b --spider --output-file=/dev/null http://droneping.herokuapp.com/ping
+	/home/pi/src/gpio/led.sh 2 on
 
-	# Ping random stuff here
+	echo "Launching RaspberryBoat"
+	#/usr/local/bin/forever -l /var/log/nodelog.txt -e /var/log/nodeerror.txt -o /var/log/nodeout.txt -v -d start /home/pi/src/RaspberryBoat/node/web.js
+	/usr/local/bin/node /home/pi/src/RaspberryBoat/node/web.js &
+	/home/pi/src/gpio/led.sh 3 blink
 
 fi
 
