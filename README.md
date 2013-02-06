@@ -1,5 +1,10 @@
 #Raspberry boat
 
+The Raspberry Boat is an rc boat with the radio part stripped out and replaced by a Raspberry Pi, a 3G modem, 
+a GPS and a camera.
+
+The results can be seen at [Raspberry Boat YouTube channel](http://www.youtube.com/playlist?list=PLTBld75fi-e3UnbYNyoU-uaFiBbxyzGDM&feature=mh_lolz)
+
 #Platform
 Raspbian (Debian Wheezy)
 
